@@ -1,4 +1,3 @@
-# Edited by Dongyu Zhang
 import random
 import numpy as np
 import torch
