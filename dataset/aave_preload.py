@@ -327,7 +327,7 @@ class AavePreloadDataset(Dataset):
         data = self.get_csv(data_file)
         log.info(f"{data_file} is read.")
 
-
+        no_encode_cols = ['rowNumber', 'user', 'timestamp', 'id']
         
         log.info("nan resolution.")
         # Identify numeric and categorical columns
@@ -362,6 +362,9 @@ class AavePreloadDataset(Dataset):
         log.info("label-fit-transform.")
         unk_value = -1
         for col_name in tqdm.tqdm(list(categorical_cols) + list(obj_cols) + list(bool_cols)):
+            if col_name in no_encode_cols:
+                log.info(f"skipping col {col_name}")
+                continue
             col_data = data[col_name]
             encoder_name = col_name
             if self.encoder_fit.get(encoder_name) is not None:
@@ -377,6 +380,9 @@ class AavePreloadDataset(Dataset):
     
         log.info("amount quant transform")
         for col_name in tqdm.tqdm(list(numeric_cols)):
+            if col_name in no_encode_cols:
+                log.info(f"skipping col {col_name}")
+                continue
             coldata = np.array(data[col_name])
             if self.encoder_fit.get(col_name) is not None:
                 bin_edges, bin_centers, bin_widths = self.encoder_fit.get(col_name)

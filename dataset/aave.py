@@ -139,13 +139,15 @@ class AaveDataset(AaveBasicDataset):
                         user_rids = []
                 else:
                     skip_idx = 0
-
+                    
                 for idx, row in user_data.iterrows():
                     row = list(row)
                     user_trans.extend(row[skip_idx:])
-                    user_label.append(row[0])
+                    
+                    user_label.append(row[1])
                     if self.get_rids and bks_exist:
-                        user_rids.append(row[0])
+                        
+                        user_rids.append(row[3])
                 trans_data.append(user_trans)
                 trans_labels.append(user_label)
                 if self.get_rids and bks_exist:
@@ -272,7 +274,7 @@ class AaveDataset(AaveBasicDataset):
                         rids_tail = user_rids[0:(jdx + self.seq_len)]
                         rids = [-1 for _ in range(jdx, 0)]
                         rids.extend(rids_tail)
-                        self.data_sids.append('_'.join([str(int(_)) for _ in rids]))
+                        self.data_sids.append('_'.join([str(_) for _ in rids]))
                         self.data_seq_last_rids.append(rids[-1])
     
             # Handle padding for shorter sequences, padding at the end
@@ -301,7 +303,7 @@ class AaveDataset(AaveBasicDataset):
                     rids_tail = user_rids[0:]
                     rids = [-1 for _ in range(pad_len)]
                     rids.extend(rids_tail)
-                    self.data_sids.append('_'.join([str(int(_)) for _ in rids]))
+                    self.data_sids.append('_'.join([str(_) for _ in rids]))
                     self.data_seq_last_rids.append(rids[-1])
     
             # Handle standard stride-based sequence creation
@@ -321,7 +323,7 @@ class AaveDataset(AaveBasicDataset):
                 # Handle row IDs for each stride if `self.get_rids` is True
                 if self.get_rids:
                     rids = user_rids[jdx:(jdx + self.seq_len)]
-                    self.data_sids.append('_'.join([str(int(_)) for _ in rids]))
+                    self.data_sids.append('_'.join([str(_) for _ in rids]))
                     self.data_seq_last_rids.append(rids[-1])
     
         # Assert that all lists have the same length to ensure consistency
