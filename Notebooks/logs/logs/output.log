@@ -102,3 +102,159 @@
 2025-01-22 13:08:05,305 - main - INFO - Total parameters: 3745390660
 2025-01-22 13:08:05,305 - main - INFO - Trainable parameters: 3745390660
 2025-01-22 13:08:05,306 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-05 11:17:37,414 - root - INFO - Logging setup completed.
+2025-02-05 11:18:46,720 - root - INFO - Logging setup completed.
+2025-02-05 11:20:09,560 - root - INFO - Logging setup completed.
+2025-02-05 11:21:29,829 - root - INFO - Logging setup completed.
+2025-02-05 11:21:30,272 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 11:21:30,296 - dataset.basic - INFO - read data : (10000, 48)
+2025-02-05 11:21:30,299 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 11:21:31,692 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 11:21:32,139 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 11:21:32,330 - dataset.dataset - INFO - ncols: 45
+2025-02-05 11:21:32,331 - dataset.dataset - INFO - no of samples 2302
+2025-02-05 11:21:32,333 - main - INFO - vocab size: 604015
+2025-02-05 11:21:32,334 - main - INFO - dataset size: 2302
+2025-02-05 11:21:32,542 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 11:21:32,560 - dataset.basic - INFO - read data : (10000, 48)
+2025-02-05 11:21:32,561 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 11:21:33,838 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 11:21:34,172 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 11:21:34,365 - dataset.dataset - INFO - ncols: 45
+2025-02-05 11:21:34,365 - dataset.dataset - INFO - no of samples 2302
+2025-02-05 11:21:34,368 - main - INFO - test dataset size: 2302
+2025-02-05 11:21:34,369 - main - INFO - # Using external test dataset, lengths: train [1933]  valid [369]  test [2302]
+2025-02-05 11:21:34,369 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-05 11:22:30,553 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-05 11:22:30,556 - main - INFO - Total parameters: 2399641455
+2025-02-05 11:22:30,557 - main - INFO - Trainable parameters: 2399641455
+2025-02-05 11:22:30,557 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-05 12:25:22,104 - root - INFO - Logging setup completed.
+2025-02-05 12:25:22,634 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 12:25:22,658 - dataset.basic - INFO - read data : (10000, 48)
+2025-02-05 12:25:22,660 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 12:25:22,663 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 12:25:23,098 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 12:25:23,295 - dataset.dataset - INFO - ncols: 45
+2025-02-05 12:25:23,296 - dataset.dataset - INFO - no of samples 2302
+2025-02-05 12:25:23,299 - main - INFO - vocab size: 645
+2025-02-05 12:25:23,299 - main - INFO - dataset size: 2302
+2025-02-05 12:25:23,320 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 12:25:23,341 - dataset.basic - INFO - read data : (10000, 48)
+2025-02-05 12:25:23,341 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 12:25:23,344 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 12:25:23,669 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 12:25:23,867 - dataset.dataset - INFO - ncols: 45
+2025-02-05 12:25:23,867 - dataset.dataset - INFO - no of samples 2302
+2025-02-05 12:25:23,870 - main - INFO - test dataset size: 2302
+2025-02-05 12:25:23,871 - main - INFO - # Using external test dataset, lengths: train [1933]  valid [369]  test [2302]
+2025-02-05 12:25:23,871 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-05 12:25:30,190 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-05 12:25:30,193 - main - INFO - Total parameters: 622716805
+2025-02-05 12:25:30,193 - main - INFO - Trainable parameters: 622716805
+2025-02-05 12:25:30,194 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-05 12:28:25,738 - main - INFO - Test Summary: test_loss: 33.653854 | test_runtime: 4.413700 | test_samples_per_second: 521.558000 | test_steps_per_second: 16.313000 | 
+2025-02-05 12:52:36,873 - root - INFO - Logging setup completed.
+2025-02-05 12:52:37,378 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 12:52:39,017 - dataset.basic - INFO - read data : (1000000, 48)
+2025-02-05 12:52:39,019 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 12:52:39,084 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 12:53:14,899 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 12:53:37,450 - dataset.dataset - INFO - ncols: 45
+2025-02-05 12:53:37,450 - dataset.dataset - INFO - no of samples 239334
+2025-02-05 12:53:37,724 - main - INFO - vocab size: 645
+2025-02-05 12:53:37,725 - main - INFO - dataset size: 239334
+2025-02-05 12:53:37,771 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 12:53:39,057 - dataset.basic - INFO - read data : (1000000, 48)
+2025-02-05 12:53:39,059 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 12:53:39,102 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 12:54:12,623 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 12:54:36,472 - dataset.dataset - INFO - ncols: 45
+2025-02-05 12:54:36,472 - dataset.dataset - INFO - no of samples 239334
+2025-02-05 12:54:36,852 - main - INFO - test dataset size: 239334
+2025-02-05 12:54:36,854 - main - INFO - # Using external test dataset, lengths: train [201040]  valid [38294]  test [239334]
+2025-02-05 12:54:36,854 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-05 12:54:42,475 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-05 12:54:42,478 - main - INFO - Total parameters: 622716805
+2025-02-05 12:54:42,478 - main - INFO - Trainable parameters: 622716805
+2025-02-05 12:54:42,479 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-05 12:59:55,953 - root - INFO - Logging setup completed.
+2025-02-05 12:59:56,413 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 12:59:57,852 - dataset.basic - INFO - read data : (1000000, 48)
+2025-02-05 12:59:57,854 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 12:59:57,892 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 13:00:31,873 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 13:00:53,008 - dataset.dataset - INFO - ncols: 45
+2025-02-05 13:00:53,008 - dataset.dataset - INFO - no of samples 239334
+2025-02-05 13:00:53,277 - main - INFO - vocab size: 645
+2025-02-05 13:00:53,278 - main - INFO - dataset size: 239334
+2025-02-05 13:00:53,317 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-05 13:00:54,547 - dataset.basic - INFO - read data : (1000000, 48)
+2025-02-05 13:00:54,548 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-05 13:00:54,591 - dataset.dataset - INFO - preparing user level data...
+2025-02-05 13:01:26,970 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-05 13:01:48,986 - dataset.dataset - INFO - ncols: 45
+2025-02-05 13:01:48,987 - dataset.dataset - INFO - no of samples 239334
+2025-02-05 13:01:49,277 - main - INFO - test dataset size: 239334
+2025-02-05 13:01:49,278 - main - INFO - # Using external test dataset, lengths: train [201040]  valid [38294]  test [239334]
+2025-02-05 13:01:49,278 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-05 13:01:54,628 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-05 13:01:54,630 - main - INFO - Total parameters: 622716805
+2025-02-05 13:01:54,631 - main - INFO - Trainable parameters: 622716805
+2025-02-05 13:01:54,631 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-05 14:53:37,398 - main - INFO - Test Summary: test_loss: 27.599051 | test_runtime: 464.736100 | test_samples_per_second: 514.989000 | test_steps_per_second: 16.095000 | 
+2025-02-07 16:45:34,498 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-02-07 16:45:34,500 - Comm - WARNING - No such comm: e02d81a5-0097-4538-be58-c9f18c39e2f1
+2025-02-07 16:45:34,501 - Comm - DEBUG - Current comms: []
+2025-02-07 18:12:09,065 - root - INFO - Logging setup completed.
+2025-02-07 18:12:09,129 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-07 18:12:12,216 - dataset.basic - INFO - read data : (2000000, 48)
+2025-02-07 18:12:12,219 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-07 18:12:12,288 - dataset.dataset - INFO - preparing user level data...
+2025-02-07 18:13:22,666 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-07 18:14:17,704 - dataset.dataset - INFO - ncols: 45
+2025-02-07 18:14:17,705 - dataset.dataset - INFO - no of samples 488990
+2025-02-07 18:14:18,253 - main - INFO - vocab size: 645
+2025-02-07 18:14:18,256 - main - INFO - dataset size: 488990
+2025-02-07 18:14:18,302 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-07 18:14:24,288 - dataset.basic - INFO - read data : (2000000, 48)
+2025-02-07 18:14:24,291 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-07 18:14:24,396 - dataset.dataset - INFO - preparing user level data...
+2025-02-07 18:15:35,520 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-07 18:16:34,606 - dataset.dataset - INFO - ncols: 45
+2025-02-07 18:16:34,607 - dataset.dataset - INFO - no of samples 488990
+2025-02-07 18:16:35,241 - main - INFO - test dataset size: 488990
+2025-02-07 18:16:35,251 - main - INFO - # Using external test dataset, lengths: train [410751]  valid [78239]  test [488990]
+2025-02-07 18:16:35,252 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-07 18:16:41,122 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-07 18:16:41,124 - main - INFO - Total parameters: 622716805
+2025-02-07 18:16:41,125 - main - INFO - Trainable parameters: 622716805
+2025-02-07 18:16:41,125 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-07 18:19:05,241 - root - INFO - Logging setup completed.
+2025-02-07 18:19:05,289 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-07 18:19:08,028 - dataset.basic - INFO - read data : (2000000, 48)
+2025-02-07 18:19:08,030 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-07 18:19:08,100 - dataset.dataset - INFO - preparing user level data...
+2025-02-07 18:20:18,469 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-07 18:21:14,941 - dataset.dataset - INFO - ncols: 45
+2025-02-07 18:21:14,941 - dataset.dataset - INFO - no of samples 488990
+2025-02-07 18:21:15,493 - main - INFO - vocab size: 645
+2025-02-07 18:21:15,497 - main - INFO - dataset size: 488990
+2025-02-07 18:21:15,540 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-07 18:21:18,024 - dataset.basic - INFO - read data : (2000000, 48)
+2025-02-07 18:21:18,026 - dataset.basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed/vocab/vocab_ob
+2025-02-07 18:21:18,106 - dataset.dataset - INFO - preparing user level data...
+2025-02-07 18:22:29,135 - dataset.dataset - INFO - creating transaction samples with vocab
+2025-02-07 18:23:29,901 - dataset.dataset - INFO - ncols: 45
+2025-02-07 18:23:29,902 - dataset.dataset - INFO - no of samples 488990
+2025-02-07 18:23:30,493 - main - INFO - test dataset size: 488990
+2025-02-07 18:23:30,504 - main - INFO - # Using external test dataset, lengths: train [410751]  valid [78239]  test [488990]
+2025-02-07 18:23:30,505 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-02-07 18:23:35,884 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-02-07 18:23:35,887 - main - INFO - Total parameters: 622716805
+2025-02-07 18:23:35,888 - main - INFO - Trainable parameters: 622716805
+2025-02-07 18:23:35,888 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-02-08 02:02:41,466 - main - INFO - Test Summary: test_loss: 28.575466 | test_runtime: 1772.748600 | test_samples_per_second: 275.837000 | test_steps_per_second: 8.620000 | 
+2025-02-10 08:39:47,394 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-02-10 08:39:47,399 - Comm - WARNING - No such comm: 1ec7e67d-afa7-4ff8-9f63-b248b391359f
+2025-02-10 08:39:47,400 - Comm - DEBUG - Current comms: []

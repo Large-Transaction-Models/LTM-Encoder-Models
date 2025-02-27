@@ -1,0 +1,64 @@
+2025-01-15 14:47:25,812 - root - INFO - Logging setup completed.
+2025-01-15 14:49:09,556 - root - INFO - Logging setup completed.
+2025-01-15 14:49:31,217 - root - INFO - Logging setup completed.
+2025-01-15 14:49:31,256 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-15 14:49:31,626 - dataset.aave_basic - INFO - read data : (10000, 128)
+2025-01-15 14:50:14,135 - root - INFO - Logging setup completed.
+2025-01-15 14:50:14,171 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-15 14:50:14,281 - dataset.aave_basic - INFO - read data : (10000, 128)
+2025-01-15 14:50:14,283 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-15 14:50:14,308 - dataset.aave - INFO - preparing user level data...
+2025-01-15 14:50:14,885 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-15 14:50:15,504 - dataset.aave - INFO - ncols: 125
+2025-01-15 14:50:15,504 - dataset.aave - INFO - no of samples 1011
+2025-01-15 14:50:15,513 - main_aave - INFO - vocab size: 1732
+2025-01-15 14:50:15,514 - main_aave - INFO - dataset size: 1011
+2025-01-15 14:50:15,618 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-15 14:50:15,668 - dataset.aave_basic - INFO - read data : (10000, 128)
+2025-01-15 14:50:15,669 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-15 14:50:15,692 - dataset.aave - INFO - preparing user level data...
+2025-01-15 14:50:16,079 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-15 14:50:16,635 - dataset.aave - INFO - ncols: 125
+2025-01-15 14:50:16,636 - dataset.aave - INFO - no of samples 1011
+2025-01-15 14:50:16,645 - main_aave - INFO - test dataset size: 1011
+2025-01-15 14:50:16,646 - main_aave - INFO - # Using external test dataset, lengths: train [849]  valid [162]  test [1011]
+2025-01-15 14:50:16,646 - main_aave - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-01-15 14:52:05,393 - main_aave - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-01-15 14:52:05,394 - main_aave - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-01-15 20:18:33,284 - main_aave - INFO - Test Summary: test_loss: 139.970779 | test_runtime: 440.508500 | test_samples_per_second: 2.295000 | test_steps_per_second: 0.073000 | 
+2025-01-16 09:24:28,326 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-01-16 09:24:28,328 - Comm - WARNING - No such comm: fbb2a26b-1e0a-4c0c-946a-fb35159a8299
+2025-01-16 09:24:28,329 - Comm - DEBUG - Current comms: []
+2025-01-16 09:29:35,690 - root - INFO - Logging setup completed.
+2025-01-16 09:30:32,649 - root - INFO - Logging setup completed.
+2025-01-16 09:30:32,703 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-16 09:30:32,785 - dataset.aave_basic - INFO - read data : (10000, 128)
+2025-01-16 09:30:32,789 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-16 09:30:32,803 - dataset.aave - INFO - preparing user level data...
+2025-01-16 09:30:33,272 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-16 09:30:33,816 - dataset.aave - INFO - ncols: 125
+2025-01-16 09:30:33,816 - dataset.aave - INFO - no of samples 2011
+2025-01-16 09:30:33,826 - main - INFO - vocab size: 1732
+2025-01-16 09:30:33,827 - main - INFO - dataset size: 2011
+2025-01-16 09:30:33,833 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-16 09:30:33,872 - dataset.aave_basic - INFO - read data : (10000, 128)
+2025-01-16 09:30:33,873 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-16 09:30:33,878 - dataset.aave - INFO - preparing user level data...
+2025-01-16 09:30:34,234 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-16 09:30:34,754 - dataset.aave - INFO - ncols: 125
+2025-01-16 09:30:34,754 - dataset.aave - INFO - no of samples 2011
+2025-01-16 09:30:34,763 - main - INFO - test dataset size: 2011
+2025-01-16 09:30:34,764 - main - INFO - # Using external test dataset, lengths: train [1689]  valid [322]  test [2011]
+2025-01-16 09:30:34,764 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-01-16 09:31:09,004 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-01-16 09:31:09,006 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-01-16 15:03:40,152 - main - INFO - Test Summary: test_loss: 139.127029 | test_runtime: 375.730400 | test_samples_per_second: 5.352000 | test_steps_per_second: 0.168000 | 
+2025-01-16 15:04:34,758 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-01-16 15:04:34,760 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-01-16 15:04:34,762 - Comm - WARNING - No such comm: 3a8ac041-81d7-4022-8843-545a6481cffc
+2025-01-16 15:04:34,763 - Comm - DEBUG - Current comms: []
+2025-01-16 15:04:34,764 - Comm - WARNING - No such comm: e6def457-6104-4358-a2d7-f5bc57ac941a
+2025-01-16 15:04:34,765 - Comm - DEBUG - Current comms: []
+2025-01-22 10:59:58,263 - ipykernel.comm - ERROR - No such comm target registered: jupyter.widget.control
+2025-01-22 10:59:58,270 - Comm - WARNING - No such comm: d5a7b3b1-a7f5-4c6f-a01b-80bd46a513c7
+2025-01-22 10:59:58,271 - Comm - DEBUG - Current comms: []

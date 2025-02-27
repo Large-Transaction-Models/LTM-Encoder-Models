@@ -1,0 +1,49 @@
+2025-01-29 10:13:00,895 - root - INFO - Logging setup completed.
+2025-01-29 10:13:01,019 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-29 10:13:02,120 - dataset.aave_basic - INFO - read data : (100000, 128)
+2025-01-29 10:13:02,124 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-29 10:13:02,141 - dataset.aave - INFO - preparing user level data...
+2025-01-29 10:13:08,444 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-29 10:13:15,865 - dataset.aave - INFO - ncols: 125
+2025-01-29 10:13:15,868 - dataset.aave - INFO - no of samples 22746
+2025-01-29 10:13:15,916 - main - INFO - vocab size: 1732
+2025-01-29 10:13:15,916 - main - INFO - dataset size: 22746
+2025-01-29 10:13:15,983 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-29 10:13:17,178 - dataset.aave_basic - INFO - read data : (100000, 128)
+2025-01-29 10:13:17,179 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-29 10:13:17,263 - dataset.aave - INFO - preparing user level data...
+2025-01-29 10:13:26,298 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-29 10:13:37,585 - dataset.aave - INFO - ncols: 125
+2025-01-29 10:13:37,585 - dataset.aave - INFO - no of samples 22746
+2025-01-29 10:13:37,628 - main - INFO - test dataset size: 22746
+2025-01-29 10:13:37,628 - main - INFO - # Using external test dataset, lengths: train [19106]  valid [3640]  test [22746]
+2025-01-29 10:13:37,628 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-01-29 10:13:51,394 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-01-29 10:13:51,395 - main - INFO - Total parameters: 1088580484
+2025-01-29 10:13:51,395 - main - INFO - Trainable parameters: 1088580484
+2025-01-29 10:13:51,396 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-01-29 10:15:26,032 - root - INFO - Logging setup completed.
+2025-01-29 10:15:26,104 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-29 10:15:27,184 - dataset.aave_basic - INFO - read data : (100000, 128)
+2025-01-29 10:15:27,186 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-29 10:15:27,201 - dataset.aave - INFO - preparing user level data...
+2025-01-29 10:15:37,044 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-29 10:15:45,039 - dataset.aave - INFO - ncols: 125
+2025-01-29 10:15:45,039 - dataset.aave - INFO - no of samples 22746
+2025-01-29 10:15:45,073 - main - INFO - vocab size: 1732
+2025-01-29 10:15:45,073 - main - INFO - dataset size: 22746
+2025-01-29 10:15:45,095 - dataset.aave_basic - INFO - cached encoded data is read from transactions_user_market_time_train.encoded.csv
+2025-01-29 10:15:45,950 - dataset.aave_basic - INFO - read data : (100000, 128)
+2025-01-29 10:15:45,950 - dataset.aave_basic - INFO - using cached vocab from /data/IDEA_DeFi_Research/LTM/Data/Lending_Protocols/Aave/V2/Mainnet/vocab/vocab_ob
+2025-01-29 10:15:46,028 - dataset.aave - INFO - preparing user level data...
+2025-01-29 10:15:53,896 - dataset.aave - INFO - creating transaction samples with vocab
+2025-01-29 10:16:03,389 - dataset.aave - INFO - ncols: 125
+2025-01-29 10:16:03,389 - dataset.aave - INFO - no of samples 22746
+2025-01-29 10:16:03,466 - main - INFO - test dataset size: 22746
+2025-01-29 10:16:03,466 - main - INFO - # Using external test dataset, lengths: train [19106]  valid [3640]  test [22746]
+2025-01-29 10:16:03,466 - main - INFO - # lengths: train [0.42]  valid [0.08]  test [0.50]
+2025-01-29 10:16:19,676 - main - INFO - model initiated: <class 'models.modules.TabFormerHierarchicalLM'>
+2025-01-29 10:16:19,704 - main - INFO - Total parameters: 1088580484
+2025-01-29 10:16:19,704 - main - INFO - Trainable parameters: 1088580484
+2025-01-29 10:16:19,704 - main - INFO - collator class: TransDataCollatorForLanguageModeling
+2025-01-29 20:46:56,088 - main - INFO - Test Summary: test_loss: 211.028687 | test_runtime: 2365.736200 | test_samples_per_second: 9.615000 | test_steps_per_second: 0.601000 | 

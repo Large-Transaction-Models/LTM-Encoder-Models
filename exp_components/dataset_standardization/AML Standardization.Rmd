@@ -1,0 +1,60 @@
+```{r}
+library(readr)
+library(dplyr)
+library(lubridate)
+
+source("../feature_creation.R")
+
+transactionsOriginal <- read_rds("/data/IDEA_DeFi_Research/Data/AML/LI_Small/transactionsOriginal.rds")
+```
+
+```{r}
+# The original structure for the AML transactions has 11 columns:
+# Timestamp, From Bank, Account...3, To Bank, Account...5, Amount Received, Receiving Currency, Amount Paid, Payment Currency, Payment Format, Is Laundering
+
+# Timestamp should be lowercased:
+transactionsStandardized <- transactionsOriginal %>%
+  mutate(Timestamp = as.numeric(as.POSIXct(Timestamp))) %>%
+  rename(timestamp = Timestamp)
+
+# Payment Format will be renamed type:
+transactionsStandardized <- transactionsStandardized %>%
+  rename(type = `Payment Format`)
+
+# Drop Is Laundering:
+transactionsStandardized <- transactionsStandardized %>%
+  select(-`Is Laundering`)
+
+# We will treat the 'From' user as the user for the transaction:
+transactionsStandardized <- transactionsStandardized %>%
+  rename(user = `Account...3`)
+
+# A receiving user could be important information, but I don't exactly know how we will use it yet:
+transactionsStandardized <- transactionsStandardized %>%
+  rename(recipient = `Account...5`) %>%
+  select(-recipient) # Dropping it for now because it makes the vocab too big
+
+# Rename a few other columns to more standard naming conventions:
+transactionsStandardized <- transactionsStandardized %>%
+  rename(userBank = `From Bank`) %>%
+  rename(recipientBank = `To Bank`) %>%
+  rename(amount = `Amount Paid`) %>%
+  rename(amountReceived = `Amount Received`) %>%
+  rename(reserve = `Payment Currency`)
+
+# we need an id column:
+transactionsStandardized$id <- 1:nrow(transactionsStandardized)
+
+```
+
+```{r}
+# Add time features:
+transactionsStandardized <- create_time_features(transactionsStandardized)
+# Add cumulative user history:
+transactionsStandardized <- add_cumulative_user_history(transactionsStandardized, skip_amount_types = c(), amount_cols = c("amount", "amountReceived"))
+```
+
+```{r}
+# Write the standardized features to disk:
+saveRDS(transactionsStandardized, file="/data/IDEA_DeFi_Research/Data/AML/LI_Small/transactions_user_time.rds")
+```

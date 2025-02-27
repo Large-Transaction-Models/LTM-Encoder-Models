@@ -1,0 +1,176 @@
+2025-02-27 07:36:26,482 - root - INFO - Running preprocess
+2025-02-27 07:36:26,482 - root - INFO - Train and test data have already been preprocessed. Skipping preprocess.
+2025-02-27 07:36:26,482 - root - INFO - Preprocess complete
+2025-02-27 07:36:26,482 - root - INFO - Running preload
+2025-02-27 07:36:45,283 - dataset.preload - INFO - read data : (2422845, 51)
+2025-02-27 07:36:45,284 - dataset.preload - INFO - /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/transactions_user_time_train.csv is read.
+2025-02-27 07:36:45,284 - dataset.preload - INFO - nan resolution.
+2025-02-27 07:36:47,737 - dataset.preload - INFO - timestamp fit transform
+2025-02-27 07:36:47,737 - dataset.preload - INFO - label-fit-transform.
+2025-02-27 07:36:50,114 - dataset.preload - INFO - amount quant transform
+2025-02-27 07:36:50,114 - dataset.preload - INFO - skipping col rowNumber
+2025-02-27 07:36:50,114 - dataset.preload - INFO - skipping col user
+2025-02-27 07:36:50,115 - dataset.preload - INFO - skipping col timestamp
+2025-02-27 07:36:50,115 - dataset.preload - INFO - skipping col id
+2025-02-27 07:36:50,116 - dataset.preload - INFO - encoding product_id
+2025-02-27 07:36:50,235 - dataset.preload - INFO - encoding amount
+2025-02-27 07:36:50,343 - dataset.preload - INFO - encoding timeOfDay
+2025-02-27 07:36:50,411 - dataset.preload - INFO - encoding dayOfWeek
+2025-02-27 07:36:50,467 - dataset.preload - INFO - encoding dayOfMonth
+2025-02-27 07:36:50,524 - dataset.preload - INFO - encoding dayOfYear
+2025-02-27 07:36:50,583 - dataset.preload - INFO - encoding quarter
+2025-02-27 07:36:50,612 - dataset.preload - INFO - encoding dayOfQuarter
+2025-02-27 07:36:50,670 - dataset.preload - INFO - encoding sinTimeOfDay
+2025-02-27 07:36:50,725 - dataset.preload - INFO - encoding cosTimeOfDay
+2025-02-27 07:36:50,764 - dataset.preload - INFO - encoding sinDayOfWeek
+2025-02-27 07:36:50,819 - dataset.preload - INFO - encoding cosDayOfWeek
+2025-02-27 07:36:50,876 - dataset.preload - INFO - encoding sinDayOfMonth
+2025-02-27 07:36:50,934 - dataset.preload - INFO - encoding cosDayOfMonth
+2025-02-27 07:36:50,991 - dataset.preload - INFO - encoding sinDayOfQuarter
+2025-02-27 07:36:51,050 - dataset.preload - INFO - encoding cosDayOfQuarter
+2025-02-27 07:36:51,108 - dataset.preload - INFO - encoding sinDayOfYear
+2025-02-27 07:36:51,166 - dataset.preload - INFO - encoding cosDayOfYear
+2025-02-27 07:36:51,224 - dataset.preload - INFO - encoding sinQuarter
+2025-02-27 07:36:51,267 - dataset.preload - INFO - encoding cosQuarter
+2025-02-27 07:36:51,309 - dataset.preload - INFO - encoding userSecondsSinceFirstTransaction
+2025-02-27 07:36:51,377 - dataset.preload - INFO - encoding userSecondsSincePreviousTransaction
+2025-02-27 07:36:51,495 - dataset.preload - INFO - encoding userViewCount
+2025-02-27 07:36:51,559 - dataset.preload - INFO - encoding userViewSumAmount
+2025-02-27 07:36:51,634 - dataset.preload - INFO - encoding userViewAvgAmount
+2025-02-27 07:36:51,710 - dataset.preload - INFO - encoding userRemove_from_cartCount
+2025-02-27 07:36:51,753 - dataset.preload - INFO - encoding userRemove_from_cartSumAmount
+2025-02-27 07:36:51,796 - dataset.preload - INFO - encoding userRemove_from_cartAvgAmount
+2025-02-27 07:36:51,841 - dataset.preload - INFO - encoding userCartCount
+2025-02-27 07:36:51,897 - dataset.preload - INFO - encoding userCartSumAmount
+2025-02-27 07:36:51,952 - dataset.preload - INFO - encoding userCartAvgAmount
+2025-02-27 07:36:52,011 - dataset.preload - INFO - encoding userPurchaseCount
+2025-02-27 07:36:52,030 - dataset.preload - INFO - encoding userPurchaseSumAmount
+2025-02-27 07:36:52,050 - dataset.preload - INFO - encoding userPurchaseAvgAmount
+2025-02-27 07:36:52,071 - dataset.preload - INFO - encoding userActiveDaysWeekly
+2025-02-27 07:36:52,126 - dataset.preload - INFO - encoding userActiveDaysMonthly
+2025-02-27 07:36:52,181 - dataset.preload - INFO - encoding userActiveDaysYearly
+2025-02-27 07:36:52,237 - dataset.preload - INFO - encoding timeFeature
+2025-02-27 07:36:52,288 - dataset.preload - INFO - encoding Year
+2025-02-27 07:36:52,580 - dataset.preload - INFO - writing cached csv to /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_train.encoded.csv
+2025-02-27 07:36:52,580 - dataset.preload - INFO - writing to file /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_train.encoded.csv
+2025-02-27 07:37:13,987 - dataset.preload - INFO - writing cached encoder fit to /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_train.encoder_fit.pkl
+2025-02-27 07:37:14,005 - dataset.preload - INFO - starting with 51 columns
+2025-02-27 07:37:14,422 - dataset.preload - INFO - total columns: ['rowNumber', 'user', 'timestamp', 'id', 'cosDayOfWeek', 'sinDayOfQuarter', 'product_id', 'dayOfYear', 'product_brand', 'category_3', 'dayOfWeek', 'dayOfQuarter', 'Year', 'sinDayOfWeek', 'cosQuarter', 'timeOfDay', 'cosDayOfYear', 'type', 'category_1', 'amount', 'sinTimeOfDay', 'quarter', 'cosDayOfMonth', 'sinDayOfYear', 'isWeekend', 'sinDayOfMonth', 'dayOfMonth', 'category_2', 'cosDayOfQuarter', 'newSession', 'sinQuarter', 'cosTimeOfDay', 'timeFeature', 'userSecondsSinceFirstTransaction', 'userPurchaseAvgAmount', 'userIsNew', 'userActiveDaysWeekly', 'userCartAvgAmount', 'userViewSumAmount', 'userViewAvgAmount', 'userCartSumAmount', 'userRemove_from_cartCount', 'userRemove_from_cartSumAmount', 'userSecondsSincePreviousTransaction', 'userRemove_from_cartAvgAmount', 'userActiveDaysYearly', 'userActiveDaysMonthly', 'userPurchaseCount', 'userViewCount', 'userCartCount', 'userPurchaseSumAmount'], total dynamic columns: ['cosDayOfWeek', 'sinDayOfQuarter', 'product_id', 'dayOfYear', 'product_brand', 'category_3', 'dayOfWeek', 'dayOfQuarter', 'Year', 'sinDayOfWeek', 'cosQuarter', 'timeOfDay', 'cosDayOfYear', 'type', 'category_1', 'amount', 'sinTimeOfDay', 'quarter', 'cosDayOfMonth', 'sinDayOfYear', 'isWeekend', 'sinDayOfMonth', 'dayOfMonth', 'category_2', 'cosDayOfQuarter', 'newSession', 'sinQuarter', 'cosTimeOfDay'], total time feature columns: ['timeFeature'],total static columns: ['userSecondsSinceFirstTransaction', 'userPurchaseAvgAmount', 'userIsNew', 'userActiveDaysWeekly', 'userCartAvgAmount', 'userViewSumAmount', 'userViewAvgAmount', 'userCartSumAmount', 'userRemove_from_cartCount', 'userRemove_from_cartSumAmount', 'userSecondsSincePreviousTransaction', 'userRemove_from_cartAvgAmount', 'userActiveDaysYearly', 'userActiveDaysMonthly', 'userPurchaseCount', 'userViewCount', 'userCartCount', 'userPurchaseSumAmount']
+2025-02-27 07:37:14,422 - dataset.preload - INFO - total dynamic vocabulary size: 472, total time feature vocabulary size: 18, total static vocabulary size: 178
+2025-02-27 07:37:14,422 - dataset.preload - INFO - column : cosDayOfWeek, vocab size : 7
+2025-02-27 07:37:14,422 - dataset.preload - INFO - column : sinDayOfQuarter, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : product_id, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : dayOfYear, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : product_brand, vocab size : 245
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : category_3, vocab size : 8
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : dayOfWeek, vocab size : 8
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : dayOfQuarter, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : Year, vocab size : 2
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : sinDayOfWeek, vocab size : 8
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : cosQuarter, vocab size : 2
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : timeOfDay, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : cosDayOfYear, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : type, vocab size : 5
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : category_1, vocab size : 7
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : amount, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : sinTimeOfDay, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : quarter, vocab size : 2
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : cosDayOfMonth, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : sinDayOfYear, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : isWeekend, vocab size : 3
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : sinDayOfMonth, vocab size : 10
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : dayOfMonth, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : category_2, vocab size : 10
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : cosDayOfQuarter, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : newSession, vocab size : 3
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : sinQuarter, vocab size : 2
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : cosTimeOfDay, vocab size : 11
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : SPECIAL, vocab size : 7
+2025-02-27 07:37:14,423 - dataset.preload - INFO - column : timeFeature, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : SPECIAL, vocab size : 7
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userSecondsSinceFirstTransaction, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userPurchaseAvgAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userIsNew, vocab size : 3
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userActiveDaysWeekly, vocab size : 4
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userCartAvgAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userViewSumAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userViewAvgAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userCartSumAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userRemove_from_cartCount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userRemove_from_cartSumAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userSecondsSincePreviousTransaction, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userRemove_from_cartAvgAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userActiveDaysYearly, vocab size : 5
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userActiveDaysMonthly, vocab size : 5
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userPurchaseCount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userViewCount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userCartCount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : userPurchaseSumAmount, vocab size : 11
+2025-02-27 07:37:14,424 - dataset.preload - INFO - column : SPECIAL, vocab size : 7
+2025-02-27 07:37:14,424 - dataset.preload - INFO - saving vocab at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/dynamic_vocab.nb
+2025-02-27 07:37:14,463 - dataset.preload - INFO - saving vocab object at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/dynamic_vocab_ob
+2025-02-27 07:37:14,463 - dataset.preload - INFO - saving vocab at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/time_feature_vocab.nb
+2025-02-27 07:37:14,494 - dataset.preload - INFO - saving vocab object at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/time_feature_vocab_ob
+2025-02-27 07:37:14,494 - dataset.preload - INFO - saving vocab at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/static_vocab.nb
+2025-02-27 07:37:14,521 - dataset.preload - INFO - saving vocab object at /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time//preloaded//vocab/static_vocab_ob
+2025-02-27 07:37:14,521 - root - INFO - Vocab sizes: 472, 18, 178.
+2025-02-27 07:37:14,521 - dataset.preload - INFO - cached encoder is read from /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_train.encoder_fit.pkl
+2025-02-27 07:37:23,670 - dataset.preload - INFO - read data : (1265587, 51)
+2025-02-27 07:37:23,670 - dataset.preload - INFO - /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/transactions_user_time_test.csv is read.
+2025-02-27 07:37:23,670 - dataset.preload - INFO - nan resolution.
+2025-02-27 07:37:24,897 - dataset.preload - INFO - timestamp fit transform
+2025-02-27 07:37:24,897 - dataset.preload - INFO - label-fit-transform.
+2025-02-27 07:37:26,172 - dataset.preload - INFO - amount quant transform
+2025-02-27 07:37:26,172 - dataset.preload - INFO - skipping col rowNumber
+2025-02-27 07:37:26,172 - dataset.preload - INFO - skipping col user
+2025-02-27 07:37:26,172 - dataset.preload - INFO - skipping col timestamp
+2025-02-27 07:37:26,172 - dataset.preload - INFO - skipping col id
+2025-02-27 07:37:26,173 - dataset.preload - INFO - encoding product_id
+2025-02-27 07:37:26,199 - dataset.preload - INFO - encoding amount
+2025-02-27 07:37:26,221 - dataset.preload - INFO - encoding timeOfDay
+2025-02-27 07:37:26,235 - dataset.preload - INFO - encoding dayOfWeek
+2025-02-27 07:37:26,247 - dataset.preload - INFO - encoding dayOfMonth
+2025-02-27 07:37:26,256 - dataset.preload - INFO - encoding dayOfYear
+2025-02-27 07:37:26,265 - dataset.preload - INFO - encoding quarter
+2025-02-27 07:37:26,272 - dataset.preload - INFO - encoding dayOfQuarter
+2025-02-27 07:37:26,282 - dataset.preload - INFO - encoding sinTimeOfDay
+2025-02-27 07:37:26,296 - dataset.preload - INFO - encoding cosTimeOfDay
+2025-02-27 07:37:26,307 - dataset.preload - INFO - encoding sinDayOfWeek
+2025-02-27 07:37:26,319 - dataset.preload - INFO - encoding cosDayOfWeek
+2025-02-27 07:37:26,330 - dataset.preload - INFO - encoding sinDayOfMonth
+2025-02-27 07:37:26,342 - dataset.preload - INFO - encoding cosDayOfMonth
+2025-02-27 07:37:26,353 - dataset.preload - INFO - encoding sinDayOfQuarter
+2025-02-27 07:37:26,362 - dataset.preload - INFO - encoding cosDayOfQuarter
+2025-02-27 07:37:26,371 - dataset.preload - INFO - encoding sinDayOfYear
+2025-02-27 07:37:26,380 - dataset.preload - INFO - encoding cosDayOfYear
+2025-02-27 07:37:26,388 - dataset.preload - INFO - encoding sinQuarter
+2025-02-27 07:37:26,395 - dataset.preload - INFO - encoding cosQuarter
+2025-02-27 07:37:26,402 - dataset.preload - INFO - encoding userSecondsSinceFirstTransaction
+2025-02-27 07:37:26,416 - dataset.preload - INFO - encoding userSecondsSincePreviousTransaction
+2025-02-27 07:37:26,446 - dataset.preload - INFO - encoding userViewCount
+2025-02-27 07:37:26,458 - dataset.preload - INFO - encoding userViewSumAmount
+2025-02-27 07:37:26,472 - dataset.preload - INFO - encoding userViewAvgAmount
+2025-02-27 07:37:26,489 - dataset.preload - INFO - encoding userRemove_from_cartCount
+2025-02-27 07:37:26,499 - dataset.preload - INFO - encoding userRemove_from_cartSumAmount
+2025-02-27 07:37:26,508 - dataset.preload - INFO - encoding userRemove_from_cartAvgAmount
+2025-02-27 07:37:26,518 - dataset.preload - INFO - encoding userCartCount
+2025-02-27 07:37:26,529 - dataset.preload - INFO - encoding userCartSumAmount
+2025-02-27 07:37:26,540 - dataset.preload - INFO - encoding userCartAvgAmount
+2025-02-27 07:37:26,553 - dataset.preload - INFO - encoding userPurchaseCount
+2025-02-27 07:37:26,559 - dataset.preload - INFO - encoding userPurchaseSumAmount
+2025-02-27 07:37:26,565 - dataset.preload - INFO - encoding userPurchaseAvgAmount
+2025-02-27 07:37:26,571 - dataset.preload - INFO - encoding userActiveDaysWeekly
+2025-02-27 07:37:26,580 - dataset.preload - INFO - encoding userActiveDaysMonthly
+2025-02-27 07:37:26,590 - dataset.preload - INFO - encoding userActiveDaysYearly
+2025-02-27 07:37:26,600 - dataset.preload - INFO - encoding timeFeature
+2025-02-27 07:37:26,610 - dataset.preload - INFO - encoding Year
+2025-02-27 07:37:26,707 - dataset.preload - INFO - writing cached csv to /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_test.encoded.csv
+2025-02-27 07:37:26,707 - dataset.preload - INFO - writing to file /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_test.encoded.csv
+2025-02-27 07:37:38,046 - dataset.preload - INFO - writing cached encoder fit to /data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/preprocessed_user_time/preloaded/transactions_user_time_test.encoder_fit.pkl
+2025-02-27 07:37:38,109 - root - INFO - Vocab sizes: 472, 18, 178.
+2025-02-27 07:37:38,126 - root - INFO - preload complete
+2025-02-27 07:37:38,126 - root - INFO - Running process
+2025-02-27 07:37:38,127 - dataset.basic - INFO - cached encoded data is read from transactions_user_time_train.encoded.csv
+2025-02-27 07:37:42,967 - dataset.basic - INFO - read data : (2422845, 51)
+2025-02-27 07:37:42,985 - dataset.dataset - INFO - preparing user level data...
+2025-02-27 07:39:09,339 - dataset.dataset - INFO - creating transaction samples with vocab

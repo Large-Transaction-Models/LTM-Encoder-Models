@@ -327,8 +327,19 @@ class TabStaticFormerBertClassification:
 
 
 class TabFormerBertModel:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, field_hidden_size=768, num_labels=2,
-                 seq_len=10, pretrained_dir=None, problem_type=None, time_pos_type=None):
+    def __init__(self, 
+                 special_tokens, 
+                 vocab, 
+                 field_ce=False, 
+                 flatten=False, 
+                 ncols=None, 
+                 field_hidden_size=768, 
+                 num_labels=2,
+                 seq_len=10, 
+                 pretrained_dir=None, 
+                 problem_type=None, 
+                 time_pos_type=None,
+                 output_hidden_states=False):
 
         self.ncols = ncols
         self.vocab = vocab
@@ -350,7 +361,8 @@ class TabFormerBertModel:
                                           num_labels=self.num_labels,
                                           seq_len=self.seq_len,
                                           problem_type=self.problem_type,
-                                          time_pos_type=self.time_pos_type)
+                                          time_pos_type=self.time_pos_type,
+                                          output_hidden_states=self.output_hidden_states)
 
         self.tokenizer = BertTokenizer(vocab_file,
                                        do_lower_case=False,
