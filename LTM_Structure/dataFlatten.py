@@ -2,6 +2,14 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from pathlib import Path
+import pyreadr
+import os
+from os.path import join, basename
+import sys
+sys.path.append(os.path.abspath('../'))
+
+from arguments import parse_arguments
+from exp_components.utils import get_data_path
 
 # Function to get the 10 most recent transactions per user (equivalent to get_recent_transactions_per_user)
 def get_recent_transactions_per_user(data, transactions, user_column='user', timestamp_column='timestamp'):
@@ -109,9 +117,16 @@ def preprocess_flattened_data_s(flattened_data, train_data=None, max_transaction
     return flattened_data
 
 ### Data Preparation Workflow
+# Get the dataset we want to load:
+args = parse_arguments()
+
+data_path, feature_extension = get_data_path(args)
 
 # Load transaction data (assuming the file path is adjusted for your environment)
-transactions = pd.read_pickle("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/Experimental/transactions_user_market_time_exoLagged.rds")
+transactions = pyreadr.read_r(f"{data_path}transactions{feature_extension}.rds")[None] 
+
+
+print(f"Loaded transactions from {data_path}transactions{feature_extension}.rds")
 
 # Remove columns containing 'exo' in their names
 transactions = transactions.loc[:, ~transactions.columns.str.contains('exo')]
