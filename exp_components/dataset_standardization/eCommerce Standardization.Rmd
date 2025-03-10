@@ -79,3 +79,70 @@ cosmeticsStandardized <- add_windowed_user_history(cosmeticsStandardized)
 # Write the standardized features to disk:
 saveRDS(cosmeticsStandardized, file="/data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/transactions_user_time.rds")
 ```
+
+```{r}
+# The original structure for the electronics transactions has columns:
+# time, event_name, product_id, category_id, category_name, brand, price, user_id, session
+
+# Time should be converted to timestamp, using a unix timestamp instead of a date/time
+electronicsStandardized <- electronicsOriginal %>%
+  mutate(timestamp = as.numeric(as.POSIXct(event_time))) %>%
+  select(-event_time)
+
+# event_name is functionally the same as "type", representing what kind of transaction was made:
+electronicsStandardized <- electronicsStandardized %>%
+  rename(type = event_type)
+
+# To make this handle the same way as the cosmetics, we need to parse category_code into category_1, category_2, and category_3
+electronicsStandardized <- electronicsStandardized %>%
+  separate(category_code, into = c("category_1", "category_2", "category_3"), sep = "\\.")
+
+# Category_id and category_name are extraneous; they are both an index for the categories, but category_1, category_2, and category_3 provide the same information in a split form:
+electronicsStandardized <- electronicsStandardized %>%
+  select(-category_id)
+
+# price should be renamed 'amount'
+electronicsStandardized <- electronicsStandardized %>%
+  rename(amount = price)
+
+# brand can be prefixed with "product" and Not Defined set to NA:
+electronicsStandardized <- electronicsStandardized %>%
+  rename(product_brand = brand) %>%
+  mutate(product_brand = case_when(product_brand == "Not defined" ~ NA,
+                                   TRUE ~ product_brand))
+
+# rename user_id to just user
+electronicsStandardized <- electronicsStandardized %>%
+  rename(user = user_id) %>%
+  rename(session = user_session)
+
+
+# Session is an interesting feature, but it is going to cause some issues when it comes to creating a meaningful vocab.
+# I am going to create a replacement feature, newSession, which indicates whether each transaction
+# was the first of a new session for a user (TRUE) or a continuation of a prior session (FALSE)
+electronicsStandardized <- electronicsStandardized %>%
+  arrange(timestamp) %>%
+  group_by(user, session) %>%
+  mutate(newSession = row_number() == 1) %>%
+  ungroup() %>%
+  select(-session)
+
+# We need an id column:
+electronicsStandardized$id <- 1:nrow(electronicsStandardized)
+
+```
+
+```{r}
+# Add time features:
+electronicsStandardized <- create_time_features(electronicsStandardized)
+# Add cumulative user history:
+electronicsStandardized <- add_cumulative_user_history(electronicsStandardized, skip_amount_types = c(), amount_cols = c("amount"))
+```
+```{r}
+electronicsStandardized <- add_windowed_user_history(electronicsStandardized)
+```
+
+```{r}
+# Write the standardized features to disk:
+saveRDS(electronicsStandardized, file="/data/IDEA_DeFi_Research/Data/eCommerce/Electronics/transactions_user_time.rds")
+```

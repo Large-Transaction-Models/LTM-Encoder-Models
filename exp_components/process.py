@@ -19,7 +19,7 @@ def process(args, data_path, feature_extension, log):
             return
     
 
-    dataset = Dataset(cls_task=True,
+    dataset = Dataset(cls_task=args.cls_task,
                       seq_len=args.seq_len,
                       root=data_path,
                       fname=train_fname,
@@ -42,7 +42,7 @@ def process(args, data_path, feature_extension, log):
     vocab_cached=True
     encoder_cached=True
 
-    test_dataset = Dataset(cls_task=True,
+    test_dataset = Dataset(cls_task=args.cls_task,
                           seq_len=args.seq_len,
                           root=data_path,
                           fname=test_fname,

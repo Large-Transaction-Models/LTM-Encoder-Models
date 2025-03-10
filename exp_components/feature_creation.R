@@ -5,7 +5,11 @@ library(lubridate)
 library(caret)
 library(purrr)
 library(RcppRoll)
+library(conflicted)
 
+conflict_prefer("quarter", "lubridate")
+conflict_prefer("first", "dplyr")
+conflict_prefer("lag", "dplyr")
 
 # This is a script to generate all relevant features.
 # Note that each functions expect data of the format produced by Aaron's featureCreation.R.

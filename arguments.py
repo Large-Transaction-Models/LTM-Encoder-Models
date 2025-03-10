@@ -78,6 +78,8 @@ def parse_arguments():
     
 
     # Task selection:
+    parser.add_argument("--do_pretrain", action='store_true',
+                        help="enable if you want to pretrain the model from scratch. The reason you might not include this is if you want to load a pretrained model instead in order to generate embeddings")
     parser.add_argument("--mlm", action='store_true',
                         help="masked lm loss; pass it for BERT")
     parser.add_argument("--cls_task", action='store_true',
@@ -98,10 +100,10 @@ def parse_arguments():
                         default=20,
                         help="number of training epochs")
     parser.add_argument("--save_steps", type=int,
-                        default=500,
+                        default=10000,
                         help="set checkpointing")
     parser.add_argument("--eval_steps", type=int,
-                        default=500,
+                        default=10000,
                         help="Number of update steps between two evaluations")
     parser.add_argument("--train_batch_size", type=int,
                         default=8,

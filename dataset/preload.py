@@ -84,10 +84,10 @@ class PreloadDataset(Dataset):
 
         self.encode_data()
         if self.vocab_cached:
-            self.load_vocab(f"{root}/preloaded/{vocab_dir}")
+            self.load_vocab(f"{root}/preloaded_{self.num_bins}_{self.nrows}/{vocab_dir}")
         else:
             self.init_vocab()
-            self.save_vocab(f"{root}/preloaded/{vocab_dir}")
+            self.save_vocab(f"{root}/preloaded_{self.num_bins}_{self.nrows}/{vocab_dir}")
 
     def init_vocab(self):
         # all column names:
@@ -293,7 +293,7 @@ class PreloadDataset(Dataset):
             self.user_ids = map(int, self.user_ids)
             data = data[data['user'].isin(self.user_ids)]
 
-        self.nrows = data.shape[0]
+        # self.nrows = data.shape[0]
         log.info(f"read data : {data.shape}")
         return data
 
@@ -302,7 +302,7 @@ class PreloadDataset(Dataset):
         data.to_csv(fname, index=False)
 
     def encode_data(self):
-        dirname = path.join(self.root, "preloaded")
+        dirname = path.join(self.root, f"preloaded_{self.num_bins}_{self.nrows}")
         fname = f'{self.fname}.encoded.csv'
         data_file = path.join(self.root, f"{self.fname}.csv")
     

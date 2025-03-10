@@ -72,7 +72,7 @@ def preprocess(args, data_path, feature_extension, log):
         categorical_columns = ['fromState', 'toState', 'borrowRateMode', 'reserve', 'type', 
                            'collateralReserve', 'borrowRateModeTo', 'borrowRateModeFrom',
                            'coinType', 'userReserveMode', 'userCoinTypeMode', 'userIsNew']
-    elif "cosmetics" in args.dataset:
+    elif "cosmetics" or "electronics" in args.dataset:
         # Categorical columns for cosmetics:
         categorical_columns = ['type', 'product_id', 'product_brand',
                             'category_1', 'category_2', 'category_3',
