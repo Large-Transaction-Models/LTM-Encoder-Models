@@ -1,20 +1,15 @@
 ```{r}
-source("preprocessing.R")
 source("cox_regression.R")
-source("gbm_regression.R")
-source("aft_regression.R")
 source("xgboost_regression.R")
 source("concordanceIndex.R")
-source("../Classification/classification_models.R")
-source("../Classification/model_evaluation_visual.R")
 source("compute_IBS.R")
-source("../dataPreprocessing.R")
+source("dataPreprocessing.R")
 ```
 
 
 ```{r}
 run_cox = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
-  source("../dataLoader.R")
+  source("dataLoader.R")
   outputs <- preprocess(train, test, pcaExplainedVar = pcaExplainedVariance)
   final_train_data = data.frame(outputs[[1]])
   final_test_data = outputs[[2]]
@@ -59,58 +54,31 @@ run_cox = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
 
 cox_results <- data.frame()
 
-indexEvents <- list.dirs(path = "../Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
 for(indexEvent in indexEvents){
-  outcomeEvents = list.dirs(path=paste0("../Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
   for(outcomeEvent in outcomeEvents){
     if(outcomeEvent %in% c("X_test", "X_train")){
       next
     }
-    outputs_pca60 <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.6)
-    outputs_pca70 <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.7)
-    outputs_pca80 <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.8)
+    
     outputs_pca90 <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9)
-    outputs_pca95 <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.95)
     
     results <- data.frame(
       indexEvent = indexEvent,
       outcomeEvent = outcomeEvent,
-      c_index_60 = outputs_pca60[[1]],
-      ibs_60 = outputs_pca60[[2]],
-      c_index_70 = outputs_pca70[[1]],
-      ibs_70 = outputs_pca70[[2]],
-      c_index_80 = outputs_pca80[[1]],
-      ibs_80 = outputs_pca80[[2]],
       c_index_90 = outputs_pca90[[1]],
-      ibs_90 = outputs_pca90[[2]],
-      c_index_95 = outputs_pca95[[1]],
-      ibs_95 = outputs_pca95[[2]]
+      ibs_90 = outputs_pca90[[2]]
     )
     
     cox_results <- cox_results %>%
       bind_rows(results)
-    
+    break
   }
+  break
 }
 
 saveRDS(cox_results, file="Results/cox_results.rds")
 
 ```
 
-
-```{r}
-source("../Classification/get_classification_cutoff.R")
-# Let's try a classification model:
-indexEvent = "Deposit"
-outcomeEvent = "Account Liquidated"
-
-source("../dataLoader.R")
-outputs <- preprocess(train, test, pcaExplainedVar = 0.9, classificationTask = TRUE, get_classification_cutoff(indexEvent, outcomeEvent))
-
-final_train_data <- outputs[[1]]
-final_test_data <- outputs[[2]]
-
-lr_results <- logistic_regression(final_train_data, final_test_data)
-
-
-```

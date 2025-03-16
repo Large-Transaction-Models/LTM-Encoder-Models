@@ -6,71 +6,87 @@ conflict_prefer("filter", "dplyr")
 conflict_prefer("summarize", "dplyr")
 conflict_prefer("select", "dplyr")
 
-
-
-# This function is tailored specifically for our DeFi data and does not necessarily use best coding practices.
-# It should be used in the following way:
-#   After loading a train and test set using dataLoader.R, pass the train data into this function
-#   and make sure to parse the output for all three results, which will include the one-hot-encoded
-#   training data and lists which represent the "smart-one-hot-encoded" categories for reserve and userReserveMode.
-#
-#   Next, pass in the test data along with the lists for reserves and userReserveMode in order to 
-#   one-hot-encode the testing data with the same categories as the training data. This is important!!!
-#   
-smartOneHotEncode <- function(df, topReserveTypes = list(), topUserReserveModes = list()){
-  # We should convert categorical features into one-hot encoded features, and make sure that we don't have too many unnecessary features as such.
+limitFactorLevels <- function(df, maxLevels = 10) {
+  # List to store the top levels for each factor
+  factorLevelInfo <- list()
   
-  factor_cols <- names(df)[sapply(df, is.factor)]
- 
+  # Make a copy to avoid mutating original data
+  dfModified <- df
   
-  #   reserve: For this, let's just make categories for the top ten reserve types, and just put the rest in "other"
-  if(length(topReserveTypes) == 0){
-    topReserveTypes <- df %>%
-      select(reserve) %>%
-      group_by(reserve) %>%
-      summarize(count = n()) %>%
-      ungroup() %>%
-      arrange(-count) %>%
-      head(10) %>%
-      select(reserve)
+  # Find categorical columns automatically (factors or characters)
+  categoricalCols <- names(df)[sapply(df, function(x) is.factor(x) || is.character(x))]
+  
+  # Process each categorical column
+  for(col in categoricalCols) {
+    # Compute frequency of each category
+    freqTable <- sort(table(df[[col]]), decreasing = TRUE)
     
-    topReserveTypes <- as.list(as.character(topReserveTypes$reserve))  
+    # Extract top categories (up to maxLevels)
+    topCategories <- names(freqTable)[seq_len(min(length(freqTable), maxLevels))]
     
+    if(length(topCategories) == maxLevels){
+      # Assign "Other" to categories not in topCategories
+      dfModified[[col]] <- as.character(dfModified[[col]])
+      dfModified[[col]][!(dfModified[[col]] %in% topCategories)] <- "Other"
+      
+      # Convert to factor with consistent ordering (top categories first, then "Other")
+      finalLevels <- c(topCategories, "Other")
+      dfModified[[col]] <- factor(dfModified[[col]], levels = finalLevels)
+      
+    }
+    # Save the factor levels for applying later to test data
+    factorLevelInfo[[col]] <- finalLevels
   }
   
-  df <- df %>%
-    mutate(reserve = case_when(reserve %in% topReserveTypes ~ reserve,
-                               TRUE ~ "Other"))
-  
-  #   userReserveMode: We will handle this the same as reserve.
-  if(length(topUserReserveModes) == 0){
-    topUserReserveModes <- df %>%
-      select(userReserveMode) %>%
-      group_by(userReserveMode) %>%
-      summarize(count = n()) %>%
-      ungroup() %>%
-      arrange(-count) %>%
-      head(10) %>%
-      select(userReserveMode) 
-    
-    topUserReserveModes <- as.list(as.character(topUserReserveModes$userReserveMode))
-  }
-  
-  
-  df <- df %>%
-    mutate(userReserveMode = case_when(userReserveMode %in% topUserReserveModes ~ userReserveMode,
-                                       TRUE ~ "Other"))
-  
-  # Now we use the fastDummies package to quickly transform reserve and userReserveMode into one-hot-encodings:
-  
-  df_encoded <- dummy_cols(
-    df,
-    select_columns = c("reserve", "userReserveMode", factor_cols),  # Which column(s) to encode
-    remove_selected_columns = TRUE,  # Drop the original columns
-    remove_first_dummy = TRUE        # Often set to TRUE to avoid dummy trap
+  # Return both the modified train set and the factor level mapping
+  list(
+    transformedData = dfModified,
+    factorLevels = factorLevelInfo
   )
+}
+
+applyFactorLevels <- function(df, factorLevels) {
+  dfModified <- df
   
-  return(list(df_encoded, topReserveTypes, topUserReserveModes))
+  for(col in names(factorLevels)) {
+    if(col %in% names(dfModified)) {
+      # Set categories not in the factorLevels to "Other"
+      dfModified[[col]] <- as.character(dfModified[[col]])
+      dfModified[[col]][!(dfModified[[col]] %in% factorLevels[[col]])] <- "Other"
+      
+      # Convert to factor using stored levels
+      dfModified[[col]] <- factor(dfModified[[col]], levels = factorLevels[[col]])
+    }
+  }
+  
+  dfModified
+}
+
+oneHotEncode <- function(df) {
+  # Identify factor columns to encode
+  factorCols <- names(df)[sapply(df, is.factor)]
+  
+  # Numeric columns to keep unchanged
+  numericCols <- setdiff(names(df), factorCols)
+  
+  # Initialize a list to store encoded columns
+  encodedList <- list()
+  
+  # One-hot encode factor columns
+  if (length(factorCols) > 0) {
+    dmy <- dummyVars(" ~ .", data = df)
+    trsf <- data.frame(predict(dmy, newdata = df))
+  }
+  
+  # Combine numeric columns if any exist
+  if (length(numericCols) > 0) {
+    encodedList[['numerics']] <- df[numericCols]
+  }
+  
+  # Combine all encoded columns into a single dataframe
+  dfEncoded <- do.call(cbind, encodedList)
+  
+  return(dfEncoded)
 }
 
 
@@ -128,14 +144,12 @@ preprocess <- function(train, test,
   }
   
   if(useOneHotEncoding == TRUE){
-    # One-hot encode the categorical data if requested:
-    trainOutput <- smartOneHotEncode(trainDataCategoricalCols)
-    trainDataCategoricalCols <- trainOutput[[1]]
-    topReserveTypes <- trainOutput[[2]]
-    topUserReserveModes <- trainOutput[[3]]
-    testDataCategoricalCols <- smartOneHotEncode(testDataCategoricalCols, 
-                                              topReserveTypes = topReserveTypes, 
-                                              topUserReserveModes = topUserReserveModes)[[1]]
+    outputs <- limitFactorLevels(trainDataCategoricalCols)
+    trainDataCategoricalCols = outputs[[1]]
+    factorLevels <- outputs[[2]]
+    testDataCategoricalCols = applyFactorLevels(testDataCategoricalCols, factorLevels)
+    trainDataCategoricalCols <- oneHotEncode(trainDataCategoricalCols)
+    testDataCategoricalCols <- oneHotEncode(testDataCategoricalCols)
   }
   
   # Put categorical columns back in the data:

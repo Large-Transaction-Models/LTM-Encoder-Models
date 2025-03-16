@@ -9,7 +9,7 @@ not_all_na <- function(x) any(!is.na(x))
 
 
 loadSurvivalDataset <- function(indexEvent, outcomeEvent, 
-                                dataPath = "~/KDD_DeFi_Survival_Dataset_And_Benchmark/Data/Survival_Data/", 
+                                dataPath = "/data/IDEA_DeFi_Research/Data/Survival_Data/", 
                                 X_path = "/X_train/",
                                 y_path = "y_train.rds"){
   
