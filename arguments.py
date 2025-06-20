@@ -12,6 +12,9 @@ def parse_arguments():
     parser.add_argument('--exp_name', type=str, 
                         default='default',
                        help="experiment name for keeping records")
+    parser.add_argument('--record_file', type=str,
+                        default='record.txt',
+                        help="record file for end of experiment")
     parser.add_argument('--seed', type=int, 
                         default=42)
     parser.add_argument("--checkpoint_dir", type=str, 
