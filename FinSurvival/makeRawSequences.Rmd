@@ -1,0 +1,100 @@
+```{r}
+library(data.table)
+
+#' Expand each transaction by concatenating the previous `seqLen` transactions'
+#' features of the same user.
+#'
+#' @param df        data.frame/data.table of raw transactions.
+#' @param seqLen    Integer L ≥ 1, the number of historical transactions to include.
+#' @param idCol     Character scalar, column identifying the user / wallet address.
+#' @param timeCol   Character scalar, column holding POSIXct or numeric timestamps.
+#' @param featureCols Character vector of feature columns to lag;
+#'                    default = all non‑id, non‑time columns.
+#' @param fillValue Value used when a user has fewer than L prior transactions
+#'                  (default 0, but NA_real_ works if you prefer missingness).
+#' @return          data.table with original columns + p × L lag columns
+#'                  named `<feature>_lag<k>`, k = 1…L.
+createSequenceFeatures <- function(df,
+                                   seqLen,
+                                   idCol      = "user_id",
+                                   timeCol    = "timestamp",
+                                   featureCols = NULL,
+                                   fillValue  = 0) {
+
+  if (seqLen < 1L) stop("`seqLen` must be a positive integer.")
+
+  dt <- as.data.table(df)
+
+  # Sort once to guarantee chronological order inside each user group
+  setorderv(dt, c(idCol, timeCol))
+
+  # Infer feature columns if not supplied
+  if (is.null(featureCols)) {
+    featureCols <- setdiff(names(dt), c(idCol, timeCol))
+  }
+
+  # For each feature and each lag k = 1…L, add shifted columns
+  for (feat in featureCols) {
+    for (k in seq_len(seqLen-1)) {
+      lagName <- sprintf("%s_lag%d", feat, k)
+      # Shift within each user group; fill with specified value
+      dt[, (lagName) := shift(.SD[[1L]],
+                              n     = k,
+                              type  = "lag",
+                              fill  = fillValue),
+         by = idCol,
+         .SDcols = feat]
+    }
+  }
+
+  return(dt[])
+}
+
+## ----------------- Example usage -----------------
+## Suppose `tx` has columns: user_id, timestamp, amount, asset_price
+
+# tx <- fread("aave_transactions.csv")         # your raw data
+# txExpanded <- createSequenceFeatures(tx, seqLen = 10)
+# head(txExpanded)
+
+## Now `txExpanded` can feed logistic‑regression, XGBoost, random‑forest, etc.
+
+```
+
+```{r}
+rawTransactions <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/transactions_user_market_time.rds") %>%
+  select(1:25)
+```
+
+```{r}
+raw_seqLen10 <- createSequenceFeatures(rawTransactions, 10, 
+                                       idCol="user",
+                                       timeCol="timestamp", 
+                                       fillValue=NA)
+```
+
+```{r}
+borrows_raw_seqLen10 <- raw_seqLen10 %>%
+  filter(type == "borrow")
+
+repays_raw_seqLen10 <- raw_seqLen10 %>%
+  filter(type == "repay")
+
+deposits_raw_seqLen10 <- raw_seqLen10 %>%
+  filter(type == "deposit")
+
+withdraws_raw_seqLen10 <- raw_seqLen10 %>%
+  filter(type == "withdraw")
+```
+
+```{r}
+data_path = "/data/IDEA_DeFi_Research/Data/Survival_Data/"
+x_dir = "X_raw_seqLen10/"
+
+
+write_rds(borrows_raw_seqLen10, paste0(data_path, "Borrow/", x_dir, "X.rds"))
+write_rds(deposits_raw_seqLen10, paste0(data_path, "Deposit/", x_dir, "X.rds"))
+write_rds(withdraws_raw_seqLen10, paste0(data_path, "Withdraw/", x_dir, "X.rds"))
+write_rds(repays_raw_seqLen10, paste0(data_path, "Repay/", x_dir, "X.rds"))
+
+```

@@ -1,0 +1,18 @@
+```{r}
+source("../dataPreprocessing.R")
+source("get_classification_cutoff.R")
+source("classification_models.R")
+source("model_evaluation_visual.R")
+```
+
+```{r}
+indexEvent = "Borrow"
+outcomeEvent = "Repay"
+
+source("../dataLoader.R")
+
+```
+
+```{r}
+
+```

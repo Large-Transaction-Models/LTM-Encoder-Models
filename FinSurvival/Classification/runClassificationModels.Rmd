@@ -1,0 +1,162 @@
+```{r}
+source("../dataPreprocessing.R")
+source("get_classification_cutoff.R")
+source("classification_models.R")
+source("model_evaluation_visual.R")
+```
+
+```{r}
+run_models = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
+  source("../dataLoader.R")
+  outputs <- preprocess(train, test,
+                        pcaExplainedVar = pcaExplainedVariance,
+                        classificationTask = TRUE,
+                        classificationCutoff = get_classification_cutoff(indexEvent, outcomeEvent))
+  final_train_data = data.frame(outputs[[1]])
+  final_test_data = outputs[[2]]
+  
+  print("Running LogReg...")
+
+  lr_list <- logistic_regression(final_train_data, final_test_data)
+  # accuracy_lr_dataframe = lr_list$metrics_lr_dataframe
+  # accuracy_lr = lr_list$metrics_lr
+  # model_version_lr = lr_list$model_version
+  
+  lr_auc = as.numeric(lr_list[[1]])
+  model_version_lr = lr_list[[2]]
+  
+  print("Running Decision Tree...")
+
+  decision_tree_list <- decision_tree(final_train_data, final_test_data)
+  # accuracy_dt_dataframe = decision_tree_list$metrics_dt_dataframe
+  # accuracy_dt = decision_tree_list$metrics_dt
+  # model_version_dt = decision_tree_list$model_version
+  
+  dt_auc = as.numeric(decision_tree_list[[1]])
+  model_version_dt = decision_tree_list[[2]]
+  
+  print("Running Elastic Net ...")
+  
+  
+  elastic_net_list <- elastic_net(final_train_data, final_test_data)
+  #accuracy_en_dataframe = elastic_net_list$metrics_en_dataframe
+  #accuracy_en = elastic_net_list$metrics_en
+  #model_version_en = elastic_net_list$model_version
+  
+  en_auc = as.numeric(elastic_net_list[[1]])
+  model_version_en = elastic_net_list[[2]]
+  
+  return(list(lr_auc, model_version_lr,
+              dt_auc, model_version_dt,
+              en_auc, model_version_en))
+}
+```
+
+
+```{r}
+# This chunk will get the results for all 16 datasets using LogReg, Elastic Net, and Decision Trees:
+results <- data.frame()
+
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+for(indexEvent in indexEvents){
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  for(outcomeEvent in outcomeEvents){
+    if(!(outcomeEvent %in% c("Borrow", "Repay", "Deposit", "Withdraw", "Account Liquidated"))){
+      print(paste0("outcome event: ", outcomeEvent, ". Skipping..."))
+      next
+    }
+    print(paste0("starting ", indexEvent, " to ", outcomeEvent))
+    
+    outputs <- run_models(indexEvent, outcomeEvent, pcaExplainedVariance = 0.7)
+   
+    lr_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "LogReg_benchmark_seqLen10",
+      auc = outputs[[1]],
+      smote = outputs[[2]]
+    )
+    dt_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "DecisionTree_benchmark_seqLen10",
+      auc = outputs[[3]],
+      smote = outputs[[4]]
+    )
+    en_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "ElasticNet_benchmark_seqLen10",
+      auc = outputs[[5]],
+      smote = outputs[[6]]
+    )
+    results <- results %>%
+      bind_rows(lr_results,
+                dt_results,
+                en_results)
+    
+  }
+}
+
+saveRDS(results, file="~/LTM-Encoder-Models/Results/Survival_Classification/benchmark_seqLen10.rds")
+
+```
+
+```{r}
+run_xgb = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
+  source("../dataLoader.R")
+  
+  print("Running XGB...")
+  # # Run XGBoost model and get concordance results:
+  outputs_xgb <- preprocess(train, test,
+                        pcaExplainedVar = pcaExplainedVariance,
+                        classificationTask = TRUE,
+                        classificationCutoff = get_classification_cutoff(indexEvent, outcomeEvent))
+  final_train_data = data.frame(outputs_xgb[[1]])
+  final_test_data = outputs_xgb[[2]]
+
+  xgboost_list <- XG_Boost(final_train_data, final_test_data)
+  #accuracy_xgb_dataframe = xgboost_list$metrics_xgb_dataframe
+  #accuracy_xgb = xgboost_list$metrics_xgb
+  #model_version_xgb = xgboost_list$model_version
+
+  
+  xgb_auc = as.numeric(xgboost_list[[1]])
+  model_version_xgb = xgboost_list[[2]]
+  
+  return(list(xgb_auc, model_version_xgb))
+}
+```
+
+
+```{r}
+# This chunk will get the XGB results for all 16 datasets:
+
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+for(indexEvent in indexEvents){
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  for(outcomeEvent in outcomeEvents){
+    if(!(outcomeEvent %in% c("Borrow", "Repay", "Deposit", "Withdraw", "Account Liquidated"))){
+      print(paste0("outcome event: ", outcomeEvent, ". Skipping..."))
+      next
+    }
+    print(paste0("starting ", indexEvent, " to ", outcomeEvent))
+    
+    outputs <- run_xgb(indexEvent, outcomeEvent, pcaExplainedVariance = 0.7)
+   
+    xgb_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "XGBoost_benchmark_seqLen10",
+      auc = outputs[[1]],
+      smote = outputs[[2]]
+    )
+    results <- results %>%
+      bind_rows(xgb_results)
+    
+  }
+}
+
+saveRDS(results, file="~/LTM-Encoder-Models/Results/Survival_Classification/resultsXGB_benchmark_seqLen10.rds")
+
+```

@@ -1,0 +1,110 @@
+```{r}
+source("cox_regression.R")
+source("xgboost_regression.R")
+source("concordanceIndex.R")
+source("../dataPreprocessing.R")
+source("aft_regression.R")
+```
+
+
+```{r}
+run_models = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
+  source("../dataLoader.R")
+  
+  # We don't want to include any instances where the timeDiff == 0 in our data, 
+  # because that would imply there's nothing to predict
+  train <- train %>%
+    filter(timeDiff > 0)
+  test <- test %>%
+    filter(timeDiff > 0)
+  
+   outputs <- preprocess(train, test,
+                         pcaExplainedVar = pcaExplainedVariance,
+                         useOneHotEncoding = FALSE,
+                         useScaling = FALSE
+                         )
+   final_train_data = data.frame(outputs[[1]])
+   final_test_data = outputs[[2]]
+
+   print(paste0("Running cox..."))
+   cox_list <- cox_regression(final_train_data, final_test_data)
+  
+   # Extract elements from the cox list
+   # Predictions made on testing set
+   pred_cox <- cox_list[[1]]
+   # Trained cox model using the training set
+   cox_model <- cox_list[[2]]
+  
+   concordance_cox <- concordanceIndex(pred_cox,final_test_data,"cox")
+  
+  
+   print(paste0("Running AFT..."))
+   # Run AFT model and get concordance results:
+   aft_list <- aft_regression(final_train_data, final_test_data)
+  
+   pred_aft <- aft_list[[1]]
+   aft_model <- aft_list[[2]]
+  
+   concordance_aft <- concordanceIndex(pred_aft, final_test_data, "aft")
+  
+  
+  print("Running XGB...")
+
+  xgboost_list <- xgboost_regression(final_train_data, final_test_data)
+  pred_xgboost <- xgboost_list[[1]]
+  xgboost_model <- xgboost_list[[2]]
+  concordance_xgboost <- concordanceIndex(pred_xgboost, final_test_data, "xgb")
+
+  return(list(
+    concordance_cox,
+    concordance_aft,
+    concordance_xgboost))
+}
+```
+
+```{r}
+
+results <- data.frame()
+
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+for(indexEvent in indexEvents){
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  for(outcomeEvent in outcomeEvents){
+    if(!(outcomeEvent %in% c("Borrow", "Repay", "Deposit", "Withdraw", "Account Liquidated"))){
+      print(paste0("outcome event: ", outcomeEvent, ". Skipping..."))
+      next
+    }
+    print(paste0("starting ", indexEvent, " to ", outcomeEvent))
+    
+    outputs <- run_models(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9)
+    
+    cox_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "Cox",
+      c_index = outputs[[1]]
+    )
+    aft_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "AFT",
+      c_index = outputs[[2]]
+    )
+    xgb_results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      model = "XGBoost",
+      c_index = outputs[[3]]
+    )
+    results <- results %>%
+      bind_rows(cox_results,
+                aft_results,
+                xgb_results)
+    
+  }
+}
+
+saveRDS(results, file="~/LTM-Encoder-Models/Results/Survival_Prediction/ltm_seqLen50/results.rds")
+
+```
+

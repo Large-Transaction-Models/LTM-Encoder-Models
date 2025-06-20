@@ -1,0 +1,154 @@
+```{r}
+library(dplyr) 
+library(tidyr)
+library(effectsize)
+library(readr)
+
+# grab text before first "_" (or the whole string if no "_")
+getPrefix <- function(strings) {
+  sub("^([^_]+).*", "\\1", strings)
+}
+```
+
+
+```{r}
+# cols: dataset, model, feature_set, metric
+# Starting with prediction results:
+results_ltm_small <- read_rds("../Results/Survival_Prediction/ltm_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent) %>%
+  mutate(feature_set = "LTM") %>%
+  mutate(model = getPrefix(model))
+results_raw <- read_rds("../Results/Survival_Prediction/raw_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent) %>%
+  mutate(feature_set = "Raw") %>%
+  mutate(model = getPrefix(model))
+results_benchmark <- read_rds("../Results/Survival_Prediction/benchmark_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent) %>%
+  mutate(feature_set = "Benchmark") %>%
+  mutate(model = getPrefix(model))
+
+
+
+
+
+perf_long <- bind_rows(results_ltm_small, results_benchmark) %>%
+  bind_rows(results_raw)
+
+# Keep only what you need and make sure the metric is numeric
+perf_long <- perf_long %>% 
+  mutate(metric = as.numeric(c_index)) %>% 
+  select(-c_index) %>%
+  filter(feature_set %in% c("Raw", "Benchmark", "LTM"))
+```
+
+```{r}
+
+perf_wide <- perf_long %>% 
+  pivot_wider(names_from = feature_set, values_from = metric) %>% 
+  # ensure the rows are in right order but they can stay un-sorted
+  arrange(dataset, model)
+
+friedman_out <- friedman.test(as.matrix(
+  perf_wide[, c("Raw", "Benchmark", "LTM")])
+)
+print(friedman_out)
+
+```
+
+```{r}
+pair_p <- list(
+  raw_vs_hand = wilcox.test(perf_wide$Raw, perf_wide$Benchmark,
+                            paired = TRUE, exact = FALSE)$p.value,
+  raw_vs_ltm  = wilcox.test(perf_wide$Raw, perf_wide$LTM,
+                            paired = TRUE, exact = FALSE)$p.value,
+  hand_vs_ltm = wilcox.test(perf_wide$Benchmark, perf_wide$LTM,
+                            paired = TRUE, exact = FALSE)$p.value
+)
+
+adjusted <- p.adjust(unlist(pair_p), method = "holm")
+data.frame(contrast = names(adjusted), p_value = adjusted)
+
+```
+
+```{r}
+# Now let's try on the classification task:
+
+# Starting with prediction results:
+classification_results_ltm <- read_rds("../Results/Survival_Classification/ltm_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent, -f1, -smote) %>%
+  mutate(feature_set = "LTM") %>%
+  mutate(model = getPrefix(model)) %>%
+  mutate(auc = as.numeric(auc))
+classification_results_raw <- read_rds("../Results/Survival_Classification/raw_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent, -smote) %>%
+  mutate(feature_set = "Raw") %>%
+  mutate(model = getPrefix(model)) %>%
+  mutate(auc = as.numeric(auc))
+classification_results_benchmark <- read_rds("../Results/Survival_Classification/benchmark_seqLen10/results.rds") %>%
+  mutate(dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent, -smote) %>%
+  mutate(feature_set = "Benchmark") %>%
+  mutate(model = getPrefix(model)) %>%
+  mutate(auc = as.numeric(auc))
+
+
+
+
+
+perf_long <- bind_rows(classification_results_ltm, classification_results_raw) %>%
+  bind_rows(classification_results_benchmark)
+
+# Keep only what you need and make sure the metric is numeric
+perf_long <- perf_long %>% 
+  mutate(metric = as.numeric(auc)) %>% 
+  select(-auc) %>%
+  filter(feature_set %in% c("Raw", "Benchmark", "LTM"))
+
+```
+
+```{r}
+
+perf_wide <- perf_long %>% 
+  pivot_wider(names_from = feature_set, values_from = metric) %>% 
+  # ensure the rows are in right order but they can stay un-sorted
+  arrange(dataset, model)
+
+friedman_out <- friedman.test(as.matrix(
+  perf_wide[, c("Raw", "Benchmark", "LTM")])
+)
+print(friedman_out)
+
+```
+
+
+```{r}
+pair_p <- list(
+  raw_vs_hand = wilcox.test(perf_wide$Raw, perf_wide$Benchmark,
+                            paired = TRUE, exact = FALSE)$p.value,
+  raw_vs_ltm  = wilcox.test(perf_wide$Raw, perf_wide$LTM,
+                            paired = TRUE, exact = FALSE)$p.value,
+  hand_vs_ltm = wilcox.test(perf_wide$Benchmark, perf_wide$LTM,
+                            paired = TRUE, exact = FALSE)$p.value
+)
+
+adjusted <- p.adjust(unlist(pair_p), method = "holm")
+data.frame(contrast = names(adjusted), p_value = adjusted)
+
+```
+
+```{r}
+library(effectsize)
+
+effects <- list(
+  raw_vs_hand = rank_biserial(perf_wide$Raw, perf_wide$Benchmark, paired = TRUE),
+  raw_vs_ltm  = rank_biserial(perf_wide$Raw, perf_wide$LTM,  paired = TRUE),
+  hand_vs_ltm = rank_biserial(perf_wide$Benchmark, perf_wide$LTM, paired = TRUE)
+)
+
+do.call(rbind, lapply(effects, as.data.frame))
+```
