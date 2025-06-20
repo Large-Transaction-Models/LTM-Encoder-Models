@@ -1,9 +1,9 @@
 # Run the experiment script
-python run_experiment.py \
+python plot_exp_loss.py \
     --exp_name aave_seqLen10_12heads\
     --dataset Aave_V2_Mainnet \
     --seed 42 \
-    --checkpoint 0 \
+    --checkpoint -1 \
     --checkpoint_dir checkpoints \
     --logging_dir logs \
     --log_file_name export_output.log \
@@ -23,7 +23,6 @@ python run_experiment.py \
     --get_rids \
     --field_hs 8 \
      \
-     \
      --include_time_features \
      --include_user_features \
      --include_market_features \
@@ -31,7 +30,6 @@ python run_experiment.py \
     --check_preprocess_cached \
     --check_preload_cached \
     --check_process_cached \
-    --do_pretrain \
     --pad_seq_first \
     --long_and_sort \
      \

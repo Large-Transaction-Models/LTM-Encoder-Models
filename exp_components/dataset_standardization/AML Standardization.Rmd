@@ -5,7 +5,7 @@ library(lubridate)
 
 source("../feature_creation.R")
 
-transactionsOriginal <- read_rds("/data/IDEA_DeFi_Research/Data/AML/LI_Small/transactionsOriginal.rds")
+transactionsOriginal <- read_rds("/data/IDEA_DeFi_Research/Data/AML/HI_Small/transactionsOriginal.rds")
 ```
 
 ```{r}
@@ -48,13 +48,17 @@ transactionsStandardized$id <- 1:nrow(transactionsStandardized)
 ```
 
 ```{r}
-# Add time features:
-transactionsStandardized <- create_time_features(transactionsStandardized)
 # Add cumulative user history:
 transactionsStandardized <- add_cumulative_user_history(transactionsStandardized, skip_amount_types = c(), amount_cols = c("amount", "amountReceived"))
+saveRDS(transactionsStandardized, file="/data/IDEA_DeFi_Research/Data/AML/HI_Small/transactions_user.rds")
+```
+
+```{r}
+# Add time features:
+transactionsStandardized <- create_time_features(transactionsStandardized)
 ```
 
 ```{r}
 # Write the standardized features to disk:
-saveRDS(transactionsStandardized, file="/data/IDEA_DeFi_Research/Data/AML/LI_Small/transactions_user_time.rds")
+saveRDS(transactionsStandardized, file="/data/IDEA_DeFi_Research/Data/AML/HI_Small/transactions_user_time.rds")
 ```

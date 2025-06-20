@@ -48,7 +48,7 @@ def preprocess(args, data_path, feature_extension, log):
     
     # There might be additional, hand-selected columns we want to drop just because they are not useful or because
     # they are going to be re-created in a more general way:
-    other_columns_to_drop = ['logAmountUSD', 'logAmount', 'logAmountETH']
+    other_columns_to_drop = ['logAmountUSD', 'logAmount', 'logAmountETH', 'target', "totalFee"]
     
     # Concatenate these lists and then drop the columns:
     columns_to_drop = all_na_columns + other_columns_to_drop
@@ -70,22 +70,28 @@ def preprocess(args, data_path, feature_extension, log):
     # are handled appropriately when building the vocabulary down the line.
     if "Aave" in args.dataset:
         categorical_columns = ['fromState', 'toState', 'borrowRateMode', 'reserve', 'type', 
-                           'collateralReserve', 'borrowRateModeTo', 'borrowRateModeFrom',
-                           'coinType', 'userReserveMode', 'userCoinTypeMode', 'userIsNew']
-    elif "cosmetics" or "electronics" in args.dataset:
+                           'collateralReserve', 'coinType']
+        if "V2" in args.dataset:
+            categorical_columns += ['borrowRateModeTo', 'borrowRateModeFrom']
+
+        if args.include_user_features:
+            categorical_columns += ['userReserveMode', 'userCoinTypeMode', 'userIsNew']
+    elif "cosmetics" in args.dataset or "electronics" in args.dataset:
         # Categorical columns for cosmetics:
         categorical_columns = ['type', 'product_id', 'product_brand',
                             'category_1', 'category_2', 'category_3',
                             'newSession']
+        log.info(f"using eCommerce columns because dataset is {args.dataset}")
     elif "AML" in args.dataset:
         # AML categoricals
         categorical_columns = ['type', 'userBank', 'recipientBank', 'reserve']
-    
+        log.info("using AML columns")
     if args.include_time_features:
         categorical_columns += ["dayOfWeek", "dayOfMonth", "dayOfYear", "quarter", "dayOfQuarter","sinDayOfWeek",
                             "cosDayOfWeek", "sinDayOfMonth", "cosDayOfMonth",
                             "sinDayOfQuarter", "cosDayOfQuarter", "sinDayOfYear",
                             "cosDayOfYear", "sinQuarter", "cosQuarter", 'isWeekend', 'Year']
+    
     
     for col in categorical_columns:
         data[col] = data[col].astype('category')

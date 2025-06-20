@@ -200,7 +200,7 @@ def pretrain(args, data_path, feature_extension, log):
         if type(value) is np.ndarray:
             performance_dict[key] = value.tolist()
 
-    with open(args.record_file, 'a+') as outfile:
+    with open(f"{args.exp_name}_{args.record_file}", 'a+') as outfile:
         outfile.write(json.dumps(performance_dict) + '\n')
 
     final_model_path = join(f"{data_path}/{args.checkpoint_dir}/", 'final-model')

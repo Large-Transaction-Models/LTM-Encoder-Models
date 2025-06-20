@@ -1,0 +1,214 @@
+```{r}
+library(readr)
+library(dplyr)
+library(lubridate)
+
+source("../feature_creation.R")
+```
+####
+Make features for mainnet v2
+####
+```{r}
+mainnetV2Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/transactionsNew.rds")
+mainnetV2_user <- add_coin_type(mainnetV2Original)
+mainnetV2_user <- add_user_object_modes(mainnetV2_user)
+mainnetV2_user <- add_cumulative_user_history(mainnetV2_user)
+mainnetV2_user <- add_windowed_user_history(mainnetV2_user)
+# Write the standardized features to disk:
+saveRDS(mainnetV2_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/transactions_user.rds")
+```
+```{r}
+mainnetV2_user_time <- create_time_features(mainnetV2_user)
+# Write the standardized features to disk:
+saveRDS(mainnetV2_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/transactions_user_time.rds")
+```
+
+```{r}
+mainnetV2_user_market_time <- add_windowed_market_history(mainnetV2_user_time)
+saveRDS(mainnetV2_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Mainnet/transactions_user_market_time.rds")
+```
+
+
+####
+Make features for avalanche v2
+####
+```{r}
+avalancheV2Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Avalanche/transactions.rds")
+avalancheV2_user <- add_coin_type(avalancheV2Original)
+avalancheV2_user <- add_user_object_modes(avalancheV2_user)
+avalancheV2_user <- add_cumulative_user_history(avalancheV2_user)
+avalancheV2_user <- add_windowed_user_history(avalancheV2_user)
+# Write the standardized features to disk:
+saveRDS(avalancheV2_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Avalanche/transactions_user.rds")
+```
+```{r}
+avalancheV2_user_time <- create_time_features(avalancheV2_user)
+# Write the standardized features to disk:
+saveRDS(avalancheV2_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Avalanche/transactions_user_time.rds")
+```
+
+```{r}
+avalancheV2_user_market_time <- add_windowed_market_history(avalancheV2_user_time)
+saveRDS(avalancheV2_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Avalanche/transactions_user_market_time.rds")
+```
+####
+Make the same sets of features for polygon v2:
+####
+```{r}
+polygonV2Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Polygon/transactions.rds")
+polygonV2_user <- add_coin_type(polygonV2Original)
+polygonV2_user <- add_user_object_modes(polygonV2_user)
+polygonV2_user <- add_cumulative_user_history(polygonV2_user)
+polygonV2_user <- add_windowed_user_history(polygonV2_user)
+# Write the standardized features to disk:
+saveRDS(polygonV2_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Polygon/transactions_user.rds")
+```
+```{r}
+polygonV2_user_time <- create_time_features(polygonV2_user)
+# Write the standardized features to disk:
+saveRDS(polygonV2_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Polygon/transactions_user_time.rds")
+```
+
+```{r}
+polygonV2_user_market_time <- add_windowed_market_history(polygonV2_user_time)
+saveRDS(polygonV2_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V2/Polygon/transactions_user_market_time.rds")
+```
+####
+Make the same sets of features for polygon v3:
+####
+```{r}
+polygonV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Polygon/transactions.rds")
+polygonV3_user <- add_coin_type(polygonV3Original)
+polygonV3_user <- add_user_object_modes(polygonV3_user)
+polygonV3_user <- add_cumulative_user_history(polygonV3_user)
+polygonV3_user <- add_windowed_user_history(polygonV3_user)
+# Write the standardized features to disk:
+saveRDS(polygonV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Polygon/transactions_user.rds")
+```
+```{r}
+polygonV3_user_time <- create_time_features(polygonV3_user)
+# Write the standardized features to disk:
+saveRDS(polygonV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Polygon/transactions_user_time.rds")
+```
+
+```{r}
+polygonV3_user_market_time <- add_windowed_market_history(polygonV3_user_time)
+saveRDS(polygonV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Polygon/transactions_user_market_time.rds")
+```
+####
+Make the same sets of features for harmony v3:
+####
+```{r}
+harmonyV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Harmony/transactions.rds")
+harmonyV3_user <- add_coin_type(harmonyV3Original)
+harmonyV3_user <- add_user_object_modes(harmonyV3_user)
+harmonyV3_user <- add_cumulative_user_history(harmonyV3_user)
+harmonyV3_user <- add_windowed_user_history(harmonyV3_user)
+# Write the standardized features to disk:
+saveRDS(harmonyV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Harmony/transactions_user.rds")
+```
+```{r}
+harmonyV3_user_time <- create_time_features(harmonyV3_user)
+# Write the standardized features to disk:
+saveRDS(harmonyV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Harmony/transactions_user_time.rds")
+```
+
+```{r}
+harmonyV3_user_market_time <- add_windowed_market_history(harmonyV3_user_time)
+saveRDS(harmonyV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Harmony/transactions_user_market_time.rds")
+```
+
+####
+Make the same sets of features for fantom v3:
+####
+```{r}
+fantomV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Fantom/transactions.rds")
+fantomV3_user <- add_coin_type(fantomV3Original)
+fantomV3_user <- add_user_object_modes(fantomV3_user)
+fantomV3_user <- add_cumulative_user_history(fantomV3_user)
+fantomV3_user <- add_windowed_user_history(fantomV3_user)
+# Write the standardized features to disk:
+saveRDS(fantomV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Fantom/transactions_user.rds")
+```
+```{r}
+fantomV3_user_time <- create_time_features(fantomV3_user)
+# Write the standardized features to disk:
+saveRDS(fantomV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Fantom/transactions_user_time.rds")
+```
+
+```{r}
+fantomV3_user_market_time <- add_windowed_market_history(fantomV3_user_time)
+saveRDS(fantomV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Fantom/transactions_user_market_time.rds")
+```
+####
+Make the same sets of features for optimism v3:
+####
+```{r}
+optimismV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Optimism/transactions.rds")
+optimismV3_user <- add_coin_type(optimismV3Original)
+optimismV3_user <- add_user_object_modes(optimismV3_user)
+optimismV3_user <- add_cumulative_user_history(optimismV3_user)
+optimismV3_user <- add_windowed_user_history(optimismV3_user)
+# Write the standardized features to disk:
+saveRDS(optimismV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Optimism/transactions_user.rds")
+```
+```{r}
+optimismV3_user_time <- create_time_features(optimismV3_user)
+# Write the standardized features to disk:
+saveRDS(optimismV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Optimism/transactions_user_time.rds")
+```
+
+```{r}
+optimismV3_user_market_time <- add_windowed_market_history(optimismV3_user_time)
+saveRDS(optimismV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Optimism/transactions_user_market_time.rds")
+```
+
+####
+Make the same sets of features for avalanche v3:
+####
+```{r}
+avalancheV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Avalanche/transactions.rds")
+avalancheV3_user <- add_coin_type(avalancheV3Original)
+avalancheV3_user <- add_user_object_modes(avalancheV3_user)
+avalancheV3_user <- add_cumulative_user_history(avalancheV3_user)
+avalancheV3_user <- add_windowed_user_history(avalancheV3_user)
+# Write the standardized features to disk:
+saveRDS(avalancheV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Avalanche/transactions_user.rds")
+```
+```{r}
+avalancheV3_user_time <- create_time_features(avalancheV3_user)
+# Write the standardized features to disk:
+saveRDS(avalancheV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Avalanche/transactions_user_time.rds")
+```
+
+```{r}
+avalancheV3_user_market_time <- add_windowed_market_history(avalancheV3_user_time)
+saveRDS(avalancheV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Avalanche/transactions_user_market_time.rds")
+```
+
+
+####
+Make the same sets of features for arbitrum v3:
+####
+```{r}
+arbitrumV3Original <- read_rds("/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Arbitrum/transactions.rds")
+arbitrumV3_user <- add_coin_type(arbitrumV3Original)
+arbitrumV3_user <- add_user_object_modes(arbitrumV3_user)
+arbitrumV3_user <- add_cumulative_user_history(arbitrumV3_user)
+arbitrumV3_user <- add_windowed_user_history(arbitrumV3_user)
+# Write the standardized features to disk:
+saveRDS(arbitrumV3_user, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Arbitrum/transactions_user.rds")
+```
+```{r}
+arbitrumV3_user_time <- create_time_features(arbitrumV3_user)
+# Write the standardized features to disk:
+saveRDS(arbitrumV3_user_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Arbitrum/transactions_user_time.rds")
+```
+
+```{r}
+arbitrumV3_user_market_time <- add_windowed_market_history(arbitrumV3_user_time)
+saveRDS(arbitrumV3_user_market_time, file="/data/IDEA_DeFi_Research/Data/Lending_Protocols/Aave/V3/Arbitrum/transactions_user_market_time.rds")
+```
+```{r}
+
+```

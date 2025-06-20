@@ -62,6 +62,7 @@ cosmeticsStandardized <- cosmeticsStandardized %>%
 
 # We need an id column:
 cosmeticsStandardized$id <- 1:nrow(cosmeticsStandardized)
+saveRDS(cosmeticsStandardized, "/data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/transactionsStandardized.rds")
 
 ```
 

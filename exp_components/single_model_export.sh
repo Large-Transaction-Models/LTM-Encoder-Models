@@ -1,16 +1,16 @@
 # Run the experiment script
-python run_experiment.py \
-    --exp_name aave_seqLen10_12heads\
+python load_pretrained_model.py \
+    --exp_name aave_seqLen10\
     --dataset Aave_V2_Mainnet \
     --seed 42 \
-    --checkpoint 0 \
+    --checkpoint -1 \
     --checkpoint_dir checkpoints \
     --logging_dir logs \
     --log_file_name export_output.log \
     --num_train_epochs 50 \
     --train_batch_size 32 \
     --eval_batch_size 32 \
-    --stride 10 \
+    --stride 1 \
     --seq_len 10 \
     --vocab_dir vocab \
     --train_test_thres 0.7 \
@@ -31,7 +31,6 @@ python run_experiment.py \
     --check_preprocess_cached \
     --check_preload_cached \
     --check_process_cached \
-    --do_pretrain \
     --pad_seq_first \
     --long_and_sort \
      \

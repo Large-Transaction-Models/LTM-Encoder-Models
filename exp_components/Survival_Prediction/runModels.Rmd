@@ -1,0 +1,197 @@
+```{r}
+source("cox_regression.R")
+source("xgboost_regression.R")
+source("aft_regression.R")
+source("concordanceIndex.R")
+source("compute_IBS.R")
+source("dataPreprocessing.R")
+source("dataLoader.R")
+```
+
+
+```{r}
+run_cox = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
+  
+  train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_train_ltm/aaveTest_figureOutName/X_train.rds", y_path = "y_train.rds") %>%
+    select(-`Index Event`, -`Outcome Event`) %>%
+    slice_sample(prop=0.3)
+  test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_test_ltm/aaveTest_figureOutName/X_test.rds", y_path = "y_test.rds") %>%
+    select(-`Index Event`, -`Outcome Event`) %>%
+    slice_sample(prop=0.3)
+  
+  outputs <- preprocess(train, test,
+                        useScaling = FALSE, useOneHotEncoding = FALSE, usePCA = TRUE, 
+                        pcaExplainedVar = pcaExplainedVariance)
+  
+  final_train_data = data.frame(outputs[[1]])
+  final_test_data = outputs[[2]]
+  
+  
+  cox_list <- cox_regression(final_train_data, final_test_data)
+  
+  # Extract elements from the cox list
+  # Predictions made on testing set of Borrow to Repay
+  pred_cox <- cox_list[[1]] 
+  # Trained cox model using the training set from Borrow to Repay.
+  cox_model <- cox_list[[2]]  
+  
+  concordance_cox <- concordanceIndex(pred_cox,final_test_data, model_type = "cox")
+  # Split into 50 time points based on observation time
+  times <- seq(
+      from = min(final_test_data$timeDiff / 86400),
+      to = max(final_test_data$timeDiff / 86400),    
+      length.out = 50                            
+    )
+  
+  
+  ibs_cox_result <- compute_IBS(
+    model = cox_model,
+    model_type = "cox",
+    train_data = final_train_data,
+    test_data = final_test_data,
+    times = times,
+    status_col = "status",
+    time_col = "timeDiff",
+    return_brier_scores = TRUE
+  )
+  
+  ibs_cox <- ibs_cox_result$IBS
+  brier_scores_cox <- ibs_cox_result$brier_scores
+  
+  return(list(concordance_cox, ibs_cox))
+}
+```
+
+```{r}
+
+cox_results <- data.frame()
+
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+for(indexEvent in indexEvents){
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  for(outcomeEvent in outcomeEvents){
+    if (startsWith(outcomeEvent, "X")) {
+      next
+    }
+    
+    outputs <- run_cox(indexEvent, outcomeEvent, pcaExplainedVariance = 0.95)
+    
+    results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      c_index = outputs[[1]],
+      ibs = outputs[[2]]
+    )
+    
+    cox_results <- cox_results %>%
+      bind_rows(results)
+    
+  }
+  break
+}
+
+saveRDS(cox_results, file="Results/cox_results.rds")
+
+```
+
+```{r}
+run_aft = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
+  
+  train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_train_ltm/aaveTest_figureOutName/X_train.rds", y_path = "y_train.rds") %>%
+    select(-`Index Event`, -`Outcome Event`) %>%
+    slice_sample(prop=0.3)
+  test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_test_ltm/aaveTest_figureOutName/X_test.rds", y_path = "y_test.rds") %>%
+    select(-`Index Event`, -`Outcome Event`) %>%
+    slice_sample(prop=0.3)
+  
+  outputs <- preprocess(train, test,
+                        useScaling = FALSE, useOneHotEncoding = FALSE, usePCA = TRUE, 
+                        pcaExplainedVar = pcaExplainedVariance)
+  
+  final_train_data = data.frame(outputs[[1]])
+  final_test_data = outputs[[2]]
+  
+  
+  aft_list <- aft_regression(final_train_data, final_test_data)
+  
+  # Extract elements from the cox list
+  # Predictions made on testing set of Borrow to Repay
+  pred_aft <- aft_list[[1]] 
+  # Trained cox model using the training set from Borrow to Repay.
+  aft_model <- aft_list[[2]]  
+  
+  concordance <- concordanceIndex(pred_aft,final_test_data, model_type = "aft")
+  # Split into 50 time points based on observation time
+  times <- seq(
+      from = min(final_test_data$timeDiff / 86400),
+      to = max(final_test_data$timeDiff / 86400),    
+      length.out = 50                            
+    )
+  
+  
+  ibs_result <- compute_IBS(
+    model = aft_model,
+    model_type = "aft",
+    train_data = final_train_data,
+    test_data = final_test_data,
+    times = times,
+    status_col = "status",
+    time_col = "timeDiff",
+    return_brier_scores = TRUE
+  )
+  
+  ibs <- ibs_result$IBS
+  brier_scores <- ibs_result$brier_scores
+  
+  return(list(concordance, ibs))
+}
+```
+
+```{r}
+
+aft_results <- data.frame()
+
+indexEvents <- list.dirs(path = "/data/IDEA_DeFi_Research/Data/Survival_Data/", full.names = FALSE, recursive=FALSE)
+for(indexEvent in indexEvents){
+  outcomeEvents = list.dirs(path=paste0("/data/IDEA_DeFi_Research/Data/Survival_Data/", indexEvent), full.names=FALSE, recursive = FALSE)
+  for(outcomeEvent in outcomeEvents){
+    if (startsWith(outcomeEvent, "X")) {
+      next
+    }
+    
+    outputs <- run_aft(indexEvent, outcomeEvent, pcaExplainedVariance = 0.95)
+    
+    results <- data.frame(
+      indexEvent = indexEvent,
+      outcomeEvent = outcomeEvent,
+      c_index = outputs[[1]],
+      ibs = outputs[[2]]
+    )
+    
+    aft_results <- aft_results %>%
+      bind_rows(results)
+    
+  }
+  break
+}
+
+saveRDS(aft_results, file="Results/aft_results.rds")
+
+```
+
+```{r}
+source("../Classification/get_classification_cutoff.R")
+# Let's try a classification model:
+indexEvent = "Deposit"
+outcomeEvent = "Account Liquidated"
+
+source("../dataLoader.R")
+outputs <- preprocess(train, test, pcaExplainedVar = 0.9, classificationTask = TRUE, get_classification_cutoff(indexEvent, outcomeEvent))
+
+final_train_data <- outputs[[1]]
+final_test_data <- outputs[[2]]
+
+lr_results <- logistic_regression(final_train_data, final_test_data)
+
+
+```

@@ -12,7 +12,7 @@ def preload(args, data_path, feature_extension, log):
     test_fname = f"transactions{feature_extension}_test"  
 
     if args.check_preload_cached:
-        if os.path.exists(f"{data_path}preloaded_{args.num_bins}_{args.nrows}/{train_fname}.encoded.csv") and os.path.exists(f"{data_path}preloaded/{test_fname}.encoded.csv"):
+        if os.path.exists(f"{data_path}preloaded_{args.num_bins}_{args.nrows}_seqLen{args.seq_len}/{train_fname}.encoded.csv") and os.path.exists(f"{data_path}preloaded_{args.num_bins}_{args.nrows}_seqLen{args.seq_len}/{test_fname}.encoded.csv"):
             log.info("Data has already been preloaded. Skipping preload.")
             return
     

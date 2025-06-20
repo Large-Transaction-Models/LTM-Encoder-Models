@@ -1,6 +1,8 @@
 import logging
 from os.path import join, basename
 from os import makedirs
+import re
+import os
 
 def get_data_path(args):
     # Set the data path based on the specified dataset:
@@ -88,4 +90,39 @@ def setup_logging(log_dir="logs", log_file_name='output.log'):
 
     return logger
 
-    
+def find_latest_checkpoint(folder_path: str) -> str:
+    """
+    Finds the latest checkpoint directory within the given folder path.
+
+    Args:
+        folder_path (str): The path to the directory containing checkpoints.
+
+    Returns:
+        str: The path to the latest checkpoint directory.
+
+    Raises:
+        FileNotFoundError: If no checkpoints are found.
+    """
+    # Check if 'final_model' directory exists
+    final_model_path = os.path.join(folder_path, "final_model")
+    if os.path.exists(final_model_path) and os.path.isdir(final_model_path):
+        return final_model_path
+
+    # Regex to match checkpoint directories
+    checkpoint_pattern = re.compile(r"checkpoint-(\d+)")
+
+    checkpoints = []
+    for dirname in os.listdir(folder_path):
+        match = re.match(r"checkpoint-(\d+)", dirname)
+        if match and os.path.isdir(os.path.join(folder_path, dirname)):
+            checkpoint_number = int(match.group(1))
+            checkpoints.append((checkpoint_number, dirname))
+
+    # No checkpoint directories found
+    if not checkpoints:
+        raise FileNotFoundError("No checkpoints found in the given folder.")
+
+    # Find the checkpoint with the highest number
+    latest_checkpoint_dir = max(checkpoints, key=lambda x: x[0])[1]
+
+    return os.path.join(folder_path, latest_checkpoint_dir)
