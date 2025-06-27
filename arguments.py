@@ -150,9 +150,10 @@ def parse_arguments():
                         help='position embedding type')
     parser.add_argument("--field_ce", action='store_true',
                         help="enable field wise CE")
+    parser.add_argument("--static_features", action='store_true',
+                        help="enable static field transformer")
 
     # Export parameters:
-    
     parser.add_argument("--nbatches", type=int,
                         default=10,
                         help="no of batches to use in export task")

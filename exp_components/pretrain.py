@@ -11,7 +11,8 @@ import json
 from transformers import Trainer, TrainingArguments, EarlyStoppingCallback
 
 from dataset.dataset import Dataset
-from models.modules import TabFormerBertLM, TabFormerBertForClassification, TabFormerBertModel
+from dataset.dataset_time_static import DatasetWithTimePosAndStaticSplit
+from models.modules import TabFormerBertLM, TabFormerBertForClassification, TabFormerBertModel, TabStaticFormerBert, TabStaticFormerBertLM, TabStaticFormerBertClassification
 from misc.utils import ordered_split_dataset, compute_cls_metrics, random_split_dataset
 from dataset.datacollator import *
 
@@ -34,7 +35,12 @@ def pretrain(args, data_path, feature_extension, log):
     # return labels when classification
     args.return_labels = args.cls_task
 
-    dataset = Dataset(cls_task=args.cls_task or args.mlm,
+    if args.static_features:
+        dataset_class = 'DatasetWithTimePosAndStaticSplit'
+    else:
+        dataset_class = 'Dataset'
+    
+    dataset = eval(dataset_class)(cls_task=args.cls_task or args.mlm,
                        seq_len=args.seq_len,
                        root=data_path,
                        fname=train_fname,
@@ -67,7 +73,7 @@ def pretrain(args, data_path, feature_extension, log):
     lengths = [trainN, valN]
     train_dataset, eval_dataset = random_split_dataset(dataset, lengths)
 
-    test_dataset = Dataset(cls_task=args.cls_task or args.mlm,
+    test_dataset = eval(dataset_class)(cls_task=args.cls_task or args.mlm,
                            seq_len=args.seq_len,
                            root=data_path,
                            fname=test_fname,
@@ -98,7 +104,12 @@ def pretrain(args, data_path, feature_extension, log):
 
     num_labels = 2
     
-    tab_net = TabFormerBertLM(custom_special_tokens,
+    if args.static_features:
+        model_class = 'TabStaticFormerBertLM'
+    else:
+        model_class = 'TabFormerBertLM'
+        
+    tab_net = eval(model_class)(custom_special_tokens,
                               vocab=vocab,
                               field_ce=args.field_ce,
                               flatten=args.flatten,

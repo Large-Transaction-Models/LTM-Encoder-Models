@@ -146,7 +146,7 @@ def main(args):
     num_labels = 2
     
     if args.mlm:
-        tab_net = TabFormerBertLM(custom_special_tokens,
+        tab_net = TabStaticFormerBertLM(custom_special_tokens,
                                   vocab=vocab,
                                   field_ce=args.field_ce,
                                   flatten=args.flatten,
@@ -155,7 +155,7 @@ def main(args):
                                   time_pos_type=args.time_pos_type
                                   )
     elif args.export_task:
-        tab_net = TabFormerBertModel(
+        tab_net = TabStaticFormerBertModel(
             custom_special_tokens,
             vocab=vocab,
             field_ce=args.field_ce,

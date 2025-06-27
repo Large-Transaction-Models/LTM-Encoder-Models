@@ -99,7 +99,6 @@ class Dataset(BasicDataset):
                 trans_rids = cached_data['RIDs']
                 bks_exist = True
 
-        
             # Reorder columns to match vocab
             ignore_columns = ["rowNumber", "user", "timestamp", "id"]
             vocab_fields = self.vocab.get_field_keys(remove_target=True, ignore_special=True)
@@ -122,6 +121,7 @@ class Dataset(BasicDataset):
                 self.trans_table['user'].ne(self.trans_table['user'].shift())]
             end_idx_list = start_idx_list[1:] - 1
             end_idx_list = end_idx_list.append(self.trans_table.index[-1:])
+            
             for ix in tqdm.tqdm(range(len(start_idx_list))):
                 start_ix, end_ix = start_idx_list[ix], end_idx_list[ix]
                 user_data = self.trans_table.iloc[start_ix:end_ix + 1]

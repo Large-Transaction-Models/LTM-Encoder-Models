@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath('../'))
 
 from dataset.dataset import Dataset
 from dataset.basic import BasicDataset
+from dataset.dataset_time_static import DatasetWithTimePosAndStaticSplit
 
 
 def process(args, data_path, feature_extension, log):
@@ -17,9 +18,14 @@ def process(args, data_path, feature_extension, log):
         if os.path.exists(f"{data_path}{train_fname}.user.pkl") and os.path.exists(f"{data_path}{test_fname}.user.pkl"):
             log.info("Data has already been processed. Skipping process.")
             return
+
+    if args.static_features:
+        dataset_class = "DatasetWithTimePosAndStaticSplit"
+    else:
+        dataset_class = "Dataset"
     
 
-    dataset = Dataset(cls_task=args.cls_task,
+    dataset = eval(dataset_class)(cls_task=args.cls_task,
                       seq_len=args.seq_len,
                       root=data_path,
                       fname=train_fname,
@@ -42,7 +48,7 @@ def process(args, data_path, feature_extension, log):
     vocab_cached=True
     encoder_cached=True
 
-    test_dataset = Dataset(cls_task=args.cls_task,
+    test_dataset = eval(dataset_class)(cls_task=args.cls_task,
                           seq_len=args.seq_len,
                           root=data_path,
                           fname=test_fname,

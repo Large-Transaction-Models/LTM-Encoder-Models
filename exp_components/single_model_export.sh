@@ -16,7 +16,7 @@ python load_pretrained_model.py \
     --train_test_thres 0.7 \
     --num_bins 4 \
     --nrows -1 \
-    --time_pos_type regular_position \
+    --time_pos_type time_aware_sin_cos_position \
     --mlm_prob 0.15 \
     --save_steps 2000 \
     --eval_steps 2000 \
