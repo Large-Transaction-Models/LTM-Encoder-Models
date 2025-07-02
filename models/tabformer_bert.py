@@ -58,6 +58,7 @@ class TabFormerBertConfig(BertConfig):
         self.seq_len = seq_len
         self.problem_type = problem_type
         self.time_pos_type = time_pos_type
+        self.attn_implementation = "eager"
 
 
 class TabFormerBertPredictionHeadTransform(nn.Module):

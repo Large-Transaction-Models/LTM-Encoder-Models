@@ -167,7 +167,7 @@ class TabStaticFormerEmbeddings(nn.Module):
 
         self.static_transformer_encoder = nn.TransformerEncoder(encoder_layer, num_layers=config.num_layers)
 
-        self.lin_proj = nn.Linear(config.field_hidden_size * config.ncols, config.hidden_size)
+        self.lin_proj = nn.Linear(config.field_hidden_size * (config.ncols+1), config.hidden_size)
 
         self.static_proj = nn.Linear(config.field_hidden_size * config.static_ncols, config.hidden_size)
 

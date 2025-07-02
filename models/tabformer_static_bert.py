@@ -87,6 +87,7 @@ class TabStaticFormerBertConfig(BertConfig):
             problem_type=None,
             type_vocab_size=2,
             time_pos_type=None,
+            attn_implementation="eager",
             **kwargs
     ):
         super().__init__(pad_token_id=pad_token_id, **kwargs)
@@ -103,6 +104,7 @@ class TabStaticFormerBertConfig(BertConfig):
         self.problem_type = problem_type
         self.type_vocab_size = type_vocab_size
         self.time_pos_type = time_pos_type
+        self.attn_implementation = "eager"
 
 
 class TabStaticFormerEmbeddings(nn.Module):

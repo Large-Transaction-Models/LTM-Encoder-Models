@@ -251,7 +251,7 @@ class TabFormerBertLM:
 
 class TabStaticFormerBertLM:
     def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768, num_attention_heads = None,
-                 time_pos_type=None):
+                 time_pos_type=None, attn_implementation="eager"):
 
         self.ncols = ncols
         self.static_ncols = static_ncols
@@ -269,7 +269,8 @@ class TabStaticFormerBertLM:
                                                 field_hidden_size=field_hidden_size,
                                                 flatten=flatten,
                                                 num_attention_heads=num_attention_heads,
-                                                time_pos_type=time_pos_type)
+                                                time_pos_type=time_pos_type,
+                                                attn_implementation = attn_implementation)
 
         self.tokenizer = BertTokenizer(vocab_file,
                                        do_lower_case=False,

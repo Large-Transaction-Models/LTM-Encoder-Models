@@ -1,0 +1,105 @@
+```{r}
+transactions <- read_rds("/data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/transactionsStandardized.rds")
+
+```
+
+```{r}
+library(dplyr)
+library(lubridate)
+
+# Function to create churn labels
+create_churn_labels <- function(df, churn_window_days = 30) {
+  # Ensure data is sorted by user and timestamp
+  df <- df %>%
+    arrange(user, timestamp)
+
+  # Compute next transaction timestamp for each user
+  df <- df %>%
+    group_by(user) %>%
+    mutate(next_transaction_timestamp = lead(timestamp)) %>%
+    ungroup()
+
+  # Calculate days until next transaction
+  df <- df %>%
+    mutate(days_until_next_transaction = as.numeric(difftime(next_transaction_timestamp, timestamp, units = "days")))
+
+  # Define churn: no transaction within churn_window_days or NA (no future transaction)
+  df <- df %>%
+    mutate(churned = ifelse(is.na(days_until_next_transaction) | days_until_next_transaction > churn_window_days, 1, 0))
+
+  # Return dataframe with churn labels
+  return(df %>% select(id, churned))
+}
+```
+
+```{r}
+churn_labels <- create_churn_labels(transactions, churn_window_days = 30)
+
+```
+
+```{r}
+saveRDS(churn_labels, "/data/IDEA_DeFi_Research/Data/eCommerce/Cosmetics/y_30Days.rds")
+```
+
+```{r}
+library(pheatmap)
+
+results <- combined_classification_results %>%
+  select(-f1_score) %>%
+  mutate(auc_score = as.numeric(sub("%", "", auc_score)) / 100)
+
+classResultsWide <- results %>%
+  pivot_wider(names_from = "Model", values_from="auc_score")
+
+classResultsWide <- classResultsWide %>%
+  column_to_rownames(var="Data_Combination")
+
+classResultsWide <- classResultsWide %>%
+  rename(NeuralNet = DeepLearningClassifier) 
+
+# Order column names based on their means (ascending)
+orderedCols <- names(sort(-colMeans(classResultsWide)))
+
+# Rearrange dataframe columns based on this order
+dfOrdered <- classResultsWide[, orderedCols]
+
+
+pheatmap(as.matrix(dfOrdered), scale='none',angle_col = 45,
+         main = "Survival Classification AUC Scores", cluster_cols = FALSE,
+         )
+
+```
+
+```{r}
+cIndexResults <- read_csv("~/KDD_DeFi_Survival_Dataset_And_Benchmark/Survival_Prediction/Results/final_results.csv") %>%
+  mutate(Dataset = paste0(indexEvent, "-", outcomeEvent)) %>%
+  select(-indexEvent, -outcomeEvent, -IBS)
+
+deepHit <- read_csv("~/KDD_DeFi_Survival_Dataset_And_Benchmark/Survival_Prediction/Results/DeepHit_final_results.csv")  %>%
+  mutate(modelType="DeepHit") %>%
+  select(-IBS)
+deepSurv <- read_csv("~/KDD_DeFi_Survival_Dataset_And_Benchmark/Survival_Prediction/Results/DeepSurv_final_results.csv") %>%
+  mutate(modelType="DeepSurv") %>%
+  select(-IBS)
+
+
+cIndexResults <- cIndexResults %>%
+  bind_rows(deepHit, deepSurv)
+
+wideResults <- cIndexResults %>%
+  pivot_wider(names_from = "modelType", values_from = "CIndex")
+
+cIndex <- wideResults %>%
+  column_to_rownames(var = "Dataset")
+
+
+
+# Order column names based on their means (ascending)
+orderedCols2 <- names(sort(-colMeans(cIndex)))
+
+# Rearrange dataframe columns based on this order
+dfOrdered2 <- cIndex[, orderedCols2]
+
+
+pheatmap(as.matrix(dfOrdered2), scale="none", angle_col = 45, main = "Survival Prediction Concordance Index", cluster_cols=FALSE)
+```

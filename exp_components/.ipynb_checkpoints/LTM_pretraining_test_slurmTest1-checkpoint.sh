@@ -18,14 +18,14 @@ python run_experiment.py \
     --checkpoint_dir checkpoints \
     --logging_dir logs \
     --log_file_name output.log \
-    --num_train_epochs 20 \
-    --train_batch_size 8 \
-    --eval_batch_size 8 \
+    --num_train_epochs 5 \
+    --train_batch_size 32 \
+    --eval_batch_size 32 \
     --stride 5 \
     --seq_len 10 \
     --vocab_dir vocab \
     --train_test_thres 0.6 \
-    --num_bins 10 \
+    --num_bins 4 \
     --nrows -1 \
     --resample_method None \
     --resample_ratio 10 \
