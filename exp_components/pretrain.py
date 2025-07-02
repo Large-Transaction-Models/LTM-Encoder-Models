@@ -106,17 +106,28 @@ def pretrain(args, data_path, feature_extension, log):
     
     if args.static_features:
         model_class = 'TabStaticFormerBertLM'
-    else:
-        model_class = 'TabFormerBertLM'
-        
-    tab_net = eval(model_class)(custom_special_tokens,
+        tab_net = eval(model_class)(custom_special_tokens,
                               vocab=vocab,
                               field_ce=args.field_ce,
                               flatten=args.flatten,
                               ncols=dataset.ncols,
                               field_hidden_size=args.field_hs,
-                              time_pos_type=args.time_pos_type
+                              static_ncols=dataset.static_ncols,
+                              time_pos_type=args.time_pos_type,
+                              num_attention_heads = args.num_attention_heads
                               )
+    else:
+        model_class = 'TabFormerBertLM'
+        tab_net = eval(model_class)(custom_special_tokens,
+                              vocab=vocab,
+                              field_ce=args.field_ce,
+                              flatten=args.flatten,
+                              ncols=dataset.ncols,
+                              field_hidden_size=args.field_hs,
+                              time_pos_type=args.time_pos_type,
+                              num_attention_heads = args.num_attention_heads
+                              )
+        
 
 
     
@@ -131,7 +142,10 @@ def pretrain(args, data_path, feature_extension, log):
     
     log.info(f"Total parameters: {total_params}")
     log.info(f"Trainable parameters: {trainable_params}")
-    collator_cls = "TransDataCollatorForLanguageModeling"
+    if args.static_features:
+        collator_cls = "TransWithStaticAndTimePosDataCollatorForLanguageModeling"
+    else:
+        collator_cls = "TransDataCollatorForLanguageModeling"
 
     data_collator = eval(collator_cls)(
         tokenizer=tab_net.tokenizer, mlm=args.mlm, mlm_probability=args.mlm_prob

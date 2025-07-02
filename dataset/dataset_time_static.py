@@ -95,7 +95,7 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
     def user_level_split_data(self):
         fname = path.join(
             self.root, f"{self.fname}.user.pkl")
-        trans_data, trans_labels = [], []
+        trans_data, trans_labels, trans_time = [], [], []
         if self.get_rids:
             trans_rids = []
         
@@ -118,8 +118,14 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
             vocab_fields = self.vocab.get_field_keys(remove_target=True, ignore_special=True)
 
             # Ensure columns_names matches vocab fields and ignore_columns
-            if not set(columns_names).issuperset(set(vocab_fields)):
+            combined_columns = set(columns_names) | set(static_columns)
+            if not combined_columns.issuperset(set(vocab_fields)):
+                missing = set(vocab_fields) - combined_columns
+                log.warning(f"❌ Missing columns from cached data: {missing}")
+                log.info(f"✅ Available columns in cached data: {list(combined_columns)}")
+                log.info(f"🎯 Expected vocab fields: {vocab_fields}")
                 raise ValueError("Mismatch between vocab fields and columns in cached data.")
+
 
             # Reorder columns
             reordered_columns = ignore_columns + [col for col in vocab_fields if col in columns_names]
@@ -127,10 +133,10 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
 
         else:
             columns_names = list(self.trans_table.columns)
-            other_columns = ['rownumber', 'user', 'timestamp', 'id']
+            other_columns = ['rowNumber', 'user', 'timestamp', 'id']
             not_use_columns = ['timeFeature']
-            # our static columns are any columns that are prefixed with 'user':
-            static_columns = [col for col in self.trans_table.columns if col.startswith('user') and col != 'user']
+            # our static columns are any columns that are prefixed with 'static':
+            static_columns = [col for col in self.trans_table.columns if col.startswith('static')]
             #*****************************************************
             # Why do we add 1 to the length of the static columns?
             self.static_ncols = len(static_columns) + 1
@@ -147,26 +153,26 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
                 start_ix, end_ix = start_idx_list[ix], end_idx_list[ix]
                 user_data = self.trans_table.iloc[start_ix:end_ix + 1]
                 user_trans_static, user_trans, user_label, user_time = [], [], [], []
-                # new assumption: 'rownumber', 'user', 'Card', 'Timestamp', 'Is Fraud?' are the 0-4h columns
+                # new assumption: 'rownumber', 'user', 'timestamp', 'id' are the 0th-3rd columns
                 # 'Timestamp' is the 3rd column, we will keep it in user_time
-                # 'Is Fraud?' is the 4th column, we will keep it in user_label
                 # 'avg_dollar_amt', 'std_dollar_amt', 'top_mcc', 'top_chip' are the -4 - -1th columns
                 # 'timeFeature' is the -5th column, we will not use it
                 if bks_exist:
-                    skip_idx = 4
+                    skip_idx = 3
                     if self.get_rids:
                         user_rids = []
                 else:
                     skip_idx = 0
                     
                 # get static feature from the first row in the sequence
-                start_static = self.trans_table.iloc[start_ix][-4:]
+                start_static = self.trans_table.iloc[start_ix][static_columns].tolist()
                 user_trans_static.extend(start_static)
                 for idx, row in user_data.iterrows():
                     row = list(row)
-                    user_trans.extend(row[skip_idx + 1:-5])
-                    user_label.append(row[skip_idx])
-                    user_time.append(row[skip_idx - 1])
+                    row_dict = dict(zip(self.trans_table.columns, row))
+                    user_trans.extend([row_dict[col] for col in columns_names])  # dynamic
+                    user_label.append(row_dict['user'])  # update this to your actual label col
+                    user_time.append(row_dict['timestamp'])      # or whatever you're using for time
                     if self.get_rids and bks_exist:
                         user_rids.append(row[0])
                 trans_data.append((user_trans_static, user_trans))
@@ -181,7 +187,8 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
                                  "RIDs": trans_rids, "time": trans_time,
                                  "columns": columns_names, "static_columns": static_columns}, cache_file)
                 else:
-                    pickle.dump({"trans": trans_data, "labels": trans_labels, "time": trans_time,
+                    pickle.dump({"trans": trans_data, "labels": trans_labels, 
+                                 "time": trans_time,
                                  "columns": columns_names, "static_columns": static_columns}, cache_file)
 
         self.vocab.set_static_field_keys(static_columns)
@@ -191,27 +198,54 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
             return trans_data, trans_labels, trans_rids, trans_time, columns_names, static_columns
         else:
             return trans_data, trans_labels, trans_time, columns_names, static_columns
-
+            
     def format_trans(self, trans_lst, column_names):
-        trans_lst = list(divide_chunks(
-            trans_lst, len(column_names)))
+        """
+        Formats a list of transactions into a list of tokenized representations 
+        suitable for further processing, like feeding into a model.
+    
+        Args:
+            trans_lst (list): A flattened list of transaction fields.
+            column_names (list): A list of column names corresponding to the transaction fields.
+    
+        Returns:
+            list: A list of lists, where each inner list contains tokenized representations 
+                  of a single transaction, potentially ending with a [SEP] token.
+        """
+
+        # Break the flat list of transactions into chunks of size equal to the number of columns
+        trans_lst = list(divide_chunks(trans_lst, len(column_names)))
+        
+        # Initialize a list to store the tokenized representations of all transactions
         pan_vocab_ids = []
-
+    
+        # Retrieve the ID for the [SEP] token from the vocabulary, marking it as a special token
         sep_id = self.vocab.get_id(self.vocab.sep_token, special_token=True)
-
+    
+        # Iterate over each transaction in the chunked transaction list
         for trans in trans_lst:
-            vocab_ids = []
+            vocab_ids = []  # Temporary list to store token IDs for the current transaction
+            # Map each field in the transaction to its corresponding vocabulary ID
             for jdx, field in enumerate(trans):
-                vocab_id = self.vocab.get_id(field, column_names[jdx])
-                vocab_ids.append(vocab_id)
-
-            # TODO : need to handle ncols when sep is not added
-            # and self.flatten:  # only add [SEP] for BERT + flatten scenario
+                try:
+                    # Use the vocabulary to get the token ID, specifying the column context
+                    vocab_id = self.vocab.get_id(field, column_names[jdx])
+                    vocab_ids.append(vocab_id)
+                except Exception as e:
+                    print("🛑 Error on field:", field)
+                    print("🧩 Column name:", column_names[jdx])
+                    print("📦 Valid tokens in this field:", list(self.vocab.token2id.get(column_names[jdx], {}).keys()))
+                    raise e
+                
+            # Optionally add the [SEP] token ID to the end of the tokenized transaction
+            # if a classification task is active (e.g., for BERT-like models)
             if self.cls_task:
                 vocab_ids.append(sep_id)
-
+    
+            # Append the processed transaction to the list of all tokenized transactions
             pan_vocab_ids.append(vocab_ids)
-
+    
+        # Return the list of tokenized transactions
         return pan_vocab_ids
 
     def format_static_trans(self, static_row, static_columns):
@@ -241,6 +275,7 @@ class DatasetWithTimePosAndStaticSplit(BasicDataset):
             user_row_ids = self.format_trans(user_row, columns_names)
 
             user_labels = trans_labels[user_idx]
+            
             user_time = trans_time[user_idx]
             if self.get_rids:
                 user_rids = trans_rids[user_idx]

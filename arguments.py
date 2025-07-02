@@ -123,6 +123,9 @@ def parse_arguments():
     parser.add_argument("--hidden_size", type=int,
                         default=768,
                         help="hidden size for transaction transformer")
+    parser.add_argument("--num_attention_heads", type=int,
+                        default=None,
+                        help="how many attention heads to use")
     parser.add_argument("--nrows", type=int,
                         default=None,
                         help="no of transactions to use")

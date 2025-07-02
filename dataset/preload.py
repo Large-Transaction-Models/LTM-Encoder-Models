@@ -97,9 +97,7 @@ class PreloadDataset(Dataset):
         drop_columns = ['rowNumber', 'user', 'timestamp','id']
         
         # we are using the user-level features as static columns, and market-level features as well if they exist.
-        static_columns = [col for col in self.trans_table.columns if col.startswith('user') and col != 'user']
-        market_columns = [col for col in self.trans_table.columns if col.startswith('market')]
-        static_columns += market_columns
+        static_columns = [col for col in self.trans_table.columns if col.startswith('static') and col != 'user']
         
         # this is the single column that will be used for the time-aware aspect
         time_feature_columns = ['timeFeature']
@@ -408,15 +406,17 @@ class PreloadDataset(Dataset):
         # List of columns to move to the front
         first_cols = ['rowNumber', 'user', 'timestamp', 'id']
         # we are using the user-level features as static columns
-        static_columns = [col for col in columns_to_select if col.startswith('user') and col != 'user']
+        static_columns = [col for col in columns_to_select if col.startswith('static_')]
 
         # this is the single column that will be used for the time-aware aspect
         time_feature_columns = ['timeFeature']
         
         # all other columns are to be used as dynamic columns
         dynamic_columns = [col for col in columns_to_select if col not in first_cols + static_columns + time_feature_columns]
-        
+       
+        # Put static columns last in the order
         rearranged_columns = first_cols + dynamic_columns + time_feature_columns + static_columns
+
         
         self.trans_table = data[rearranged_columns]
     

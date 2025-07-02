@@ -92,14 +92,44 @@ def preprocess(args, data_path, feature_extension, log):
                             "sinDayOfQuarter", "cosDayOfQuarter", "sinDayOfYear",
                             "cosDayOfYear", "sinQuarter", "cosQuarter", 'isWeekend', 'Year']
     
+
+
+    # Prefix all categorical columns
+    rename_cats = {col: f"cat_{col}" for col in categorical_columns}
+    data.rename(columns=rename_cats, inplace=True)
     
+    # Update list for later processing
+    categorical_columns = [f"cat_{col}" for col in categorical_columns]
     for col in categorical_columns:
         data[col] = data[col].astype('category')
+        
     
     
     sort_columns =  ['user', 'timeFeature']
     new_data = data.sort_values(by=sort_columns)
+
+    if args.static_features:
+        log.info("Renaming static features")
+        if args.include_user_features:
+            # Rename user features to prefix with 'static_'
+            rename_dict = {col: f"static_{col}" for col in user_features}
+            new_data.rename(columns=rename_dict, inplace=True)
+            # Update the user_features list to use the new names
+            user_features = [f"static_{col}" for col in user_features]
+        if args.include_market_features:
+            # Rename market features to prefix with 'static_'
+            rename_dict = {col:f"static_{col}" for col in market_features}
+            new_data.rename(columns=rename_dict, inplace=True)
+            # Update the market_features list to use the new names
+            market_features = [f"static_{col}" for col in market_features]
     
+        print("Columns:", list(new_data.columns))
+    
+    # Move static features to the end of the DataFrame
+    static_features = [col for col in new_data.columns if col.startswith('static_')]
+    non_static_features = [col for col in new_data.columns if col not in static_features]
+    new_data = new_data[non_static_features + static_features]
+    print("Columns:", list(new_data.columns))
     
     # columns we specifically don't want to log-transform:
     columns_not_to_log = ['timeFeature', 'id']

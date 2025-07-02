@@ -166,8 +166,8 @@ class TabEmbedsForClassification:
     def __init__(self, flatten=False, ncols=12, field_hidden_size=None, num_labels=2, seq_len=None,
                  problem_type=None, cls_dropout_prob=0.1, rnn_hs=None, rnn_bd=False, embeds_model_type=None):
 
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * ncols)
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
 
         self.config = TabFormerBertConfig(ncols=ncols,
                                           hidden_size=hidden_size,
@@ -209,21 +209,24 @@ class TabRawDataForClassification:
 
 
 class TabFormerBertLM:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, field_hidden_size=768,
+    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, field_hidden_size=768, num_attention_heads=None,
                  time_pos_type=None):
 
         self.ncols = ncols
         self.vocab = vocab
         vocab_file = self.vocab.filename
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * self.ncols)
+
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
 
         self.config = TabFormerBertConfig(vocab_size=len(self.vocab),
                                           ncols=self.ncols,
                                           hidden_size=hidden_size,
                                           field_hidden_size=field_hidden_size,
                                           flatten=flatten,
-                                          num_attention_heads=self.ncols,
+                                          num_attention_heads=num_attention_heads,
                                           time_pos_type=time_pos_type)
 
         self.tokenizer = BertTokenizer(vocab_file,
@@ -247,23 +250,25 @@ class TabFormerBertLM:
 
 
 class TabStaticFormerBertLM:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768,
+    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768, num_attention_heads = None,
                  time_pos_type=None):
 
         self.ncols = ncols
         self.static_ncols = static_ncols
         self.vocab = vocab
         vocab_file = self.vocab.filename
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * self.ncols)
         print(f"TabStaticFormerBertLM used {static_ncols} static cols")
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
         self.config = TabStaticFormerBertConfig(vocab_size=len(self.vocab),
                                                 ncols=self.ncols,
                                                 static_ncols=self.static_ncols,
                                                 hidden_size=hidden_size,
                                                 field_hidden_size=field_hidden_size,
                                                 flatten=flatten,
-                                                num_attention_heads=self.ncols,
+                                                num_attention_heads=num_attention_heads,
                                                 time_pos_type=time_pos_type)
 
         self.tokenizer = BertTokenizer(vocab_file,
@@ -288,7 +293,7 @@ class TabStaticFormerBertLM:
 
 
 class TabStaticFormerBertClassification:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768,
+    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768, num_attention_heads = None,
                  seq_len=0, num_labels=2, time_pos_type=None, pretrained_dir=None, problem_type=None, fc=False):
 
         self.ncols = ncols
@@ -296,10 +301,12 @@ class TabStaticFormerBertClassification:
         self.vocab = vocab
         vocab_file = self.vocab.filename
         self.fc = fc
-        hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
         self.pretrained_dir = pretrained_dir
         self.problem_type = problem_type
-
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
         self.config = TabStaticFormerBertConfig(vocab_size=len(self.vocab),
                                                 ncols=self.ncols,
                                                 static_ncols=self.static_ncols,
@@ -307,7 +314,7 @@ class TabStaticFormerBertClassification:
                                                 seq_len=seq_len,
                                                 field_hidden_size=field_hidden_size,
                                                 flatten=flatten,
-                                                num_attention_heads=self.ncols,
+                                                num_attention_heads=num_attention_heads,
                                                 num_labels=num_labels,
                                                 time_pos_type=time_pos_type,
                                                 problem_type=problem_type)
@@ -336,6 +343,7 @@ class TabFormerBertModel:
                  field_hidden_size=768, 
                  num_labels=2,
                  seq_len=10, 
+                 num_attention_heads = None,
                  pretrained_dir=None, 
                  problem_type=None, 
                  time_pos_type=None,
@@ -349,15 +357,16 @@ class TabFormerBertModel:
         self.pretrained_dir = pretrained_dir
         self.problem_type = problem_type
         self.time_pos_type = time_pos_type
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * self.ncols)
-
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
         self.config = TabFormerBertConfig(vocab_size=len(self.vocab),
                                           ncols=self.ncols,
                                           hidden_size=hidden_size,
                                           field_hidden_size=field_hidden_size,
                                           flatten=flatten,
-                                          num_attention_heads=self.ncols,
+                                          num_attention_heads=num_attention_heads,
                                           num_labels=self.num_labels,
                                           seq_len=self.seq_len,
                                           problem_type=self.problem_type,
@@ -398,7 +407,7 @@ class TabFormerBertModel:
 
 
 class TabStaticFormerBert:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768, num_labels=2,
+    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, static_ncols=None, field_hidden_size=768, num_labels=2, num_attention_heads = None,
                  seq_len=10, pretrained_dir=None, problem_type=None, time_pos_type=None):
 
         self.ncols = ncols
@@ -410,8 +419,10 @@ class TabStaticFormerBert:
         self.pretrained_dir = pretrained_dir
         self.problem_type = problem_type
         self.time_pos_type = time_pos_type
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * self.ncols)
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
 
         self.config = TabStaticFormerBertConfig(vocab_size=len(self.vocab),
                                                 ncols=self.ncols,
@@ -460,7 +471,7 @@ class TabStaticFormerBert:
 
 
 class TabFormerBertForClassification:
-    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, field_hidden_size=768, num_labels=2,
+    def __init__(self, special_tokens, vocab, field_ce=False, flatten=False, ncols=None, field_hidden_size=768, num_labels=2, num_attention_heads = None,
                  seq_len=10, pretrained_dir=None, problem_type=None, time_pos_type=None):
 
         self.ncols = ncols
@@ -471,15 +482,17 @@ class TabFormerBertForClassification:
         self.pretrained_dir = pretrained_dir
         self.problem_type = problem_type
         self.time_pos_type = time_pos_type
-        hidden_size = field_hidden_size if flatten else (
-            field_hidden_size * self.ncols)
+        if num_attention_heads is None:
+            num_attention_heads = self.ncols
+        # hidden_size = field_hidden_size if flatten else (field_hidden_size * self.ncols)
+        hidden_size = field_hidden_size if flatten else(field_hidden_size * num_attention_heads)
 
         self.config = TabFormerBertConfig(vocab_size=len(self.vocab),
                                           ncols=self.ncols,
                                           hidden_size=hidden_size,
                                           field_hidden_size=field_hidden_size,
                                           flatten=flatten,
-                                          num_attention_heads=self.ncols,
+                                          num_attention_heads=num_attention_heads,
                                           num_labels=self.num_labels,
                                           seq_len=self.seq_len,
                                           problem_type=self.problem_type,

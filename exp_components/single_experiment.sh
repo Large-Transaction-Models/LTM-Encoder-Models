@@ -22,6 +22,7 @@ python run_experiment.py \
     --eval_steps 2000 \
     --get_rids \
     --field_hs 8 \
+    --num_attention_heads 12 \
     --static_features \
      \
      \
