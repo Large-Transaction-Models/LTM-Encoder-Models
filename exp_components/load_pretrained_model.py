@@ -5,7 +5,8 @@ import sys
 from torch.utils.data import DataLoader
 sys.path.append(os.path.abspath('../'))
 from dataset.dataset import Dataset
-from models.modules import TabFormerBertLM, TabFormerBertModel  # or TabFormerBertForClassification
+from dataset.dataset_time_static import DatasetWithTimePosAndStaticSplit
+from models.modules import TabFormerBertLM, TabFormerBertForClassification, TabFormerBertModel, TabStaticFormerBert, TabStaticFormerBertLM, TabStaticFormerBertClassification
 
 from utils import setup_logging
 
@@ -75,42 +76,64 @@ if torch.cuda.is_available():
 
 # return labels when classification
 args.return_labels = args.cls_task
-
-# Path to wherever run_experiment.py wrote the final checkpoint
-dataset = Dataset(cls_task=args.cls_task or args.mlm,
-                   seq_len=args.seq_len,
-                   root=data_path,
-                   fname=train_fname,
-                   user_level_cached=True, # We should only be running export after we've created the user-level data in process()
-                   vocab_cached=True, # the vocab should have been created in preload, which needs to be done before this.
-                   external_vocab_path=f"{vocab_dir}/vocab_ob",
-                   nrows=args.nrows,
-                   flatten=args.flatten,
-                   stride=args.stride,
-                   return_labels=args.return_labels,
-                   label_category=args.label_category,
-                   pad_seq_first=args.pad_seq_first,
-                   get_rids=args.get_rids,
-                   long_and_sort=args.long_and_sort,
-                   resample_method=args.resample_method,
-                   resample_ratio=args.resample_ratio,
-                   resample_seed=args.resample_seed,
-                   )
+if args.static_features:
+    dataset_class = 'DatasetWithTimePosAndStaticSplit'
+else:
+    dataset_class = 'Dataset'
+    
+dataset = eval(dataset_class)(cls_task=args.cls_task or args.mlm,
+                               seq_len=args.seq_len,
+                               root=data_path,
+                               fname=train_fname,
+                               user_level_cached=True, # We should only be running export after we've created the user-level data in process()
+                               vocab_cached=True, # the vocab should have been created in preload, which needs to be done before this.
+                               external_vocab_path=f"{vocab_dir}/vocab_ob",
+                               nrows=args.nrows,
+                               flatten=args.flatten,
+                               stride=args.stride,
+                               return_labels=args.return_labels,
+                               label_category=args.label_category,
+                               pad_seq_first=args.pad_seq_first,
+                               get_rids=args.get_rids,
+                               long_and_sort=args.long_and_sort,
+                               resample_method=args.resample_method,
+                               resample_ratio=args.resample_ratio,
+                               resample_seed=args.resample_seed,
+                               )
 
 vocab = dataset.vocab
 custom_special_tokens = vocab.get_special_tokens()
 log.info(f'vocab size: {len(vocab)}')
 
-net = TabFormerBertModel(custom_special_tokens,
-                          vocab=vocab,
-                          field_ce=args.field_ce,
-                          flatten=args.flatten,
-                          ncols=dataset.ncols,
-                          field_hidden_size=args.field_hs,
-                          time_pos_type=args.time_pos_type,
-                          seq_len = dataset.seq_len,
-                          num_labels = 2,
-                        output_hidden_states = True)
+if args.static_features:
+        model_class = 'TabStaticFormerBert'
+        net = eval(model_class)(custom_special_tokens,
+                              vocab=vocab,
+                              field_ce=args.field_ce,
+                              flatten=args.flatten,
+                              ncols=dataset.ncols,
+                              field_hidden_size=args.field_hs,
+                              static_ncols=dataset.static_ncols,
+                              time_pos_type=args.time_pos_type,
+                              seq_len = dataset.seq_len,
+                              num_labels = 2,
+                              num_attention_heads = args.num_attention_heads,
+                              output_hidden_states = True
+                              )
+    else:
+        model_class = 'TabFormerBertModel'
+        net = eval(model_class)(custom_special_tokens,
+                              vocab=vocab,
+                              field_ce=args.field_ce,
+                              flatten=args.flatten,
+                              ncols=dataset.ncols,
+                              field_hidden_size=args.field_hs,
+                              time_pos_type=args.time_pos_type,
+                              num_attention_heads = args.num_attention_heads,
+                              seq_len = dataset.seq_len,
+                              num_labels = 2,
+                              output_hidden_states = True
+                              )
 
 # 2) Load the saved state_dict (the weights):
 print(f"Trying to load state dictionary from {model_path}/pytorch_model.bin")
@@ -135,7 +158,16 @@ trainable_params = sum(p.numel() for p in net.model.parameters() if p.requires_g
 
 log.info(f"Total parameters: {total_params}")
 log.info(f"Trainable parameters: {trainable_params}")
-collator_cls = "TransDataCollatorForExtraction"
+
+
+if args.static_features:
+    collator_cls = "TransWithStaticAndTimePosDataCollatorForExtraction"
+else:
+    collator_cls = "TransDataCollatorForExtraction"
+
+data_collator = eval(collator_cls)(
+    tokenizer=tab_net.tokenizer, mlm=args.mlm, mlm_probability=args.mlm_prob
+)
 
 
 log.info(f"collator class: {collator_cls}")
