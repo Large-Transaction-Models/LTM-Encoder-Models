@@ -74,6 +74,33 @@ data.frame(contrast = names(adjusted), p_value = adjusted)
 ```
 
 ```{r}
+# Load library
+library(readr)
+
+# Load the data
+df <- perf_wide
+
+# Filter out Cox model
+df_no_cox <- df[df$model != "Cox", ]
+
+# Paired t-tests excluding Cox
+t_ltm_vs_benchmark <- t.test(df_no_cox$LTM, df_no_cox$Benchmark, paired = TRUE)
+t_ltm_vs_raw <- t.test(df_no_cox$LTM, df_no_cox$Raw, paired = TRUE)
+t_benchmark_vs_raw <- t.test(df_no_cox$Benchmark, df_no_cox$Raw, paired = TRUE)
+
+# Print results
+cat("LTM vs Benchmark (no Cox):\n")
+print(t_ltm_vs_benchmark)
+
+cat("\nLTM vs Raw (no Cox):\n")
+print(t_ltm_vs_raw)
+
+cat("\nBenchmark vs Raw (no Cox):\n")
+print(t_benchmark_vs_raw)
+
+```
+
+```{r}
 # Now let's try on the classification task:
 
 # Starting with prediction results:
