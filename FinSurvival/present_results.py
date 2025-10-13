@@ -45,6 +45,10 @@ def load_benchmark_results():
             if col in df.columns:
                 df = df.drop(columns=[col])
         
+        # Transform Cox values: 1 - original_value
+        if 'Cox' in df.columns:
+            df['Cox'] = 1 - df['Cox']
+        
         # Add features column
         df['features'] = 'benchmark'
         
@@ -94,6 +98,9 @@ def load_raw_results():
             # Clean model names (remove suffixes)
             df['model'] = df['model'].str.replace('_.*$', '', regex=True)
             
+            # Transform Cox values: 1 - original_value (before pivoting)
+            df.loc[df['model'] == 'Cox', 'c_index'] = 1 - df.loc[df['model'] == 'Cox', 'c_index']
+            
             # Pivot to wide format
             df = df.pivot_table(index=['dataset', 'features'], 
                               columns='model', 
@@ -140,6 +147,9 @@ def load_ltm_results():
             # Clean model names (remove suffixes)
             df['model'] = df['model'].str.replace('_.*$', '', regex=True)
             
+            # Transform Cox values: 1 - original_value (before pivoting)
+            df.loc[df['model'] == 'Cox', 'c_index'] = 1 - df.loc[df['model'] == 'Cox', 'c_index']
+            
             # Pivot to wide format
             df = df.pivot_table(index=['dataset', 'features'], 
                               columns='model', 
@@ -184,7 +194,7 @@ def create_heatmap(data, title, filename, metric_name="C-index"):
     df_long['dataset'] = pd.Categorical(df_long['dataset'], categories=dataset_order)
     
     # Create the plot
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    fig, ax = plt.subplots(1, 1, figsize=(14, 8))
     
     # Create pivot table for heatmap
     pivot_data = df_long.pivot_table(values=metric_name.lower(), 
@@ -208,18 +218,17 @@ def create_heatmap(data, title, filename, metric_name="C-index"):
                 linewidths=0.5,
                 ax=ax)
     
-    # No horizontal line - removed as requested
-    
     # Customize plot
     ax.set_title(title, fontsize=16, fontweight='bold', pad=20)
-    ax.set_xlabel('Model', fontsize=12)
+    ax.set_xlabel('', fontsize=12)  # Remove x-label since we have spanning headers
     ax.set_ylabel('Dataset', fontsize=12)
     
-    # Rotate x-axis labels
+    # Rotate x-axis labels (sub-column labels)
     plt.xticks(rotation=45, ha='right')
     plt.yticks(rotation=0)
     
-    # Adjust layout
+    # Adjust layout to make room for headers
+    plt.subplots_adjust(bottom=0.15)
     plt.tight_layout()
     
     # Save the plot
