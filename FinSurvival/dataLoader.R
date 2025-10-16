@@ -38,15 +38,15 @@ loadSurvivalDataset <- function(indexEvent, outcomeEvent,
   return(inner_join(y, X, by = c("id")))
 }
 
-train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_train_flattened/", y_path = "y_train.rds")
-test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_test_flattened/", y_path = "y_test.rds")
+#train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_train_flattened/", y_path = "y_train.rds")
+#test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_test_flattened/", y_path = "y_test.rds")
 
-#train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_raw_seqLen10/", y_path = "y_train.rds")
-#test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_raw_seqLen10/", y_path = "y_test.rds")
+# train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_raw_seqLen10/", y_path = "y_train.rds")
+# test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_raw_seqLen10/", y_path = "y_test.rds")
 
 
-#train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_ltm_small/", y_path = "y_train.rds")
-#test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_ltm_small/", y_path = "y_test.rds")
+train = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_ltm_small/", y_path = "y_train.rds")
+test = loadSurvivalDataset(indexEvent, outcomeEvent, X_path = "/X_ltm_small/", y_path = "y_test.rds")
 
 
 # Find the shared columns

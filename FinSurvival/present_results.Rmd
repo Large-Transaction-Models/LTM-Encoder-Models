@@ -29,8 +29,8 @@ pubColorScheme = "Set1"
 
 # Read in the prediction results and rename columns to just be model names:
 ```{r}
-benchmark_results <- read_csv("../Results/Survival_Prediction/originalBenchmark/final_results.csv") %>%
-  select(-GBM, -DeepHit, -DeepSurv) %>%
+benchmark_results <- read_csv("../Results/Survival_Prediction/originalBenchmark/final_results_updated.csv") %>%
+  select(-DeepHit, -DeepSurv) %>%
   mutate(features = "benchmark") %>%
   mutate(outcomeEvent = case_when(outcomeEvent == "account liquidated" ~ "liquidated",
                                   TRUE ~ outcomeEvent)) %>%
@@ -44,12 +44,13 @@ benchmark_results <- benchmark_results %>%
         XGBoost = mean(XGBoost, na.rm = TRUE),
         Cox = mean(Cox, na.rm = TRUE),
         AFT = mean(AFT, na.rm = TRUE),
+        RSF = mean(RSF, na.rm = TRUE),
         features = first(features),
         dataset = "mean"
       )
   )
 
-raw_results <- read_rds("../Results/Survival_Prediction/raw_seqLen10/results.rds") %>%
+raw_results_original <- read_rds("../Results/Survival_Prediction/raw_seqLen10/results.rds") %>%
   mutate(features = "raw") %>%
   mutate(outcomeEvent = case_when(outcomeEvent == "Account Liquidated" ~ "liquidated",
                                   TRUE ~ tolower(outcomeEvent))) %>%
@@ -57,7 +58,20 @@ raw_results <- read_rds("../Results/Survival_Prediction/raw_seqLen10/results.rds
   select(-indexEvent, -outcomeEvent) %>%
   mutate(model = str_remove(model, "_.*$")) %>%
   pivot_wider(names_from = "model",
-              values_from = "c_index")
+              values_from = "c_index") %>%
+  select(-Cox)
+
+raw_results <- read_rds("../Results/Survival_Prediction/raw_seqLen10_updated/results_cox.rds") %>%
+  select(c_index) %>%
+  rename(Cox = c_index)
+
+raw_rsf <- read_rds("../Results/Survival_Prediction/raw_seqLen10_updated/results_rsf.rds") %>%
+  select(c_index) %>%
+  rename(RSF = c_index)
+
+raw_results <- raw_results_original %>%
+  bind_cols(raw_results) %>%
+  bind_cols(raw_rsf)
 
 raw_results <- raw_results %>%
   bind_rows(
@@ -66,12 +80,13 @@ raw_results <- raw_results %>%
         XGBoost = mean(XGBoost, na.rm = TRUE),
         Cox = mean(Cox, na.rm = TRUE),
         AFT = mean(AFT, na.rm = TRUE),
+        RSF = mean(RSF, na.rm = TRUE),
         features = first(features),
         dataset = "mean"
       )
   )
   
-ltm_results <- read_rds("../Results/Survival_Prediction/ltm_seqLen10/results.rds") %>%
+ltm_results <- read_rds("../Results/Survival_Prediction/ltm_small_updated/results.rds") %>%
   mutate(features = "LTM") %>%
   mutate(outcomeEvent = case_when(outcomeEvent == "Account Liquidated" ~ "liquidated",
                                   TRUE ~ tolower(outcomeEvent))) %>%
@@ -81,6 +96,13 @@ ltm_results <- read_rds("../Results/Survival_Prediction/ltm_seqLen10/results.rds
   pivot_wider(names_from = "model",
               values_from = "c_index")
 
+ltm_rsf <- read_rds("../Results/Survival_Prediction/ltm_small_updated/results_rsf.rds") %>%
+  select(c_index) %>%
+  rename(RSF = c_index)
+
+ltm_results <- ltm_results %>%
+  bind_cols(ltm_rsf)
+
 ltm_results <- ltm_results %>%
   bind_rows(
     ltm_results %>%
@@ -88,6 +110,7 @@ ltm_results <- ltm_results %>%
         XGBoost = mean(XGBoost, na.rm = TRUE),
         Cox = mean(Cox, na.rm = TRUE),
         AFT = mean(AFT, na.rm = TRUE),
+        RSF = mean(RSF, na.rm = TRUE),
         features = first(features),
         dataset = "mean"
       )
@@ -104,7 +127,7 @@ results_long <- all_results %>%
     values_to = "c_index"
   )
 
-results_long$model <- factor(results_long$model, levels = c("XGBoost", "AFT", "Cox"))
+results_long$model <- factor(results_long$model, levels = c("XGBoost", "AFT", "Cox", "RSF"))
 results_long$dataset <- factor(results_long$dataset, levels = c("mean",setdiff(unique(results_long$dataset), "mean")))
 # Get the level index of "mean" (assuming factor ordering matches your plot)
 mean_index <- which(levels(results_long$dataset) == "mean")
@@ -120,7 +143,7 @@ prediction_results <- ggplot(results_long, aes(x = features, y = dataset, fill =
   scale_fill_gradientn(colors = colorRampPalette(rev(brewer.pal(9, "RdYlBu")))(100)) +  # you can tune colors
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +  # rotate model names
-  facet_wrap(~ model) +
+  facet_wrap(~ model, ncol = 4) +
   geom_hline(yintercept = mean_index+0.5, linewidth = 1, color = "black") +
   labs(
     title = "Survival Prediction Model Performance Across Feature Sets",
@@ -129,7 +152,7 @@ prediction_results <- ggplot(results_long, aes(x = features, y = dataset, fill =
     fill = "C-index"
   ) + 
   geom_text(aes(label = sprintf("%.2f", c_index)), size = 3)
-ggsave("prediction_results.pdf", plot = prediction_results, width = 7, height = 5)
+ggsave("prediction_results.pdf", plot = prediction_results, width = 10, height = 5)
 prediction_results
 ```
 

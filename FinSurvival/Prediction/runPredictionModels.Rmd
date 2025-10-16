@@ -4,6 +4,7 @@ source("xgboost_regression.R")
 source("concordanceIndex.R")
 source("../dataPreprocessing.R")
 source("aft_regression.R")
+source("random_survival_forest.R")
 ```
 
 
@@ -11,54 +12,60 @@ source("aft_regression.R")
 run_models = function(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9){
   source("../dataLoader.R")
   
-  # We don't want to include any instances where the timeDiff == 0 in our data, 
-  # because that would imply there's nothing to predict
-  train <- train %>%
-    filter(timeDiff > 0)
-  test <- test %>%
-    filter(timeDiff > 0)
-  
    outputs <- preprocess(train, test,
                          pcaExplainedVar = pcaExplainedVariance,
                          useOneHotEncoding = FALSE,
-                         useScaling = FALSE
+                         useScaling = FALSE,
+                         usePCA = FALSE
                          )
+   
    final_train_data = data.frame(outputs[[1]])
-   final_test_data = outputs[[2]]
+   final_test_data = data.frame(outputs[[2]])
 
-   print(paste0("Running cox..."))
-   cox_list <- cox_regression(final_train_data, final_test_data)
-  
-   # Extract elements from the cox list
-   # Predictions made on testing set
-   pred_cox <- cox_list[[1]]
-   # Trained cox model using the training set
-   cox_model <- cox_list[[2]]
-  
-   concordance_cox <- concordanceIndex(pred_cox,final_test_data,"cox")
-  
-  
-   print(paste0("Running AFT..."))
-   # Run AFT model and get concordance results:
-   aft_list <- aft_regression(final_train_data, final_test_data)
-  
-   pred_aft <- aft_list[[1]]
-   aft_model <- aft_list[[2]]
-  
-   concordance_aft <- concordanceIndex(pred_aft, final_test_data, "aft")
+   # print(paste0("Running cox..."))
+   # cox_list <- cox_regression(final_train_data, final_test_data)
+   # 
+   # # Extract elements from the cox list
+   # # Predictions made on testing set
+   # pred_cox <- cox_list[[1]]
+   # # Trained cox model using the training set
+   # cox_model <- cox_list[[2]]
+   # 
+   # concordance_cox <- concordanceIndex(pred_cox,final_test_data, hazard=TRUE)
   
   
-  print("Running XGB...")
-
-  xgboost_list <- xgboost_regression(final_train_data, final_test_data)
-  pred_xgboost <- xgboost_list[[1]]
-  xgboost_model <- xgboost_list[[2]]
-  concordance_xgboost <- concordanceIndex(pred_xgboost, final_test_data, "xgb")
-
-  return(list(
-    concordance_cox,
-    concordance_aft,
-    concordance_xgboost))
+  #  print(paste0("Running AFT..."))
+  #  # Run AFT model and get concordance results:
+  #  aft_list <- aft_regression(final_train_data, final_test_data)
+  # 
+  #  pred_aft <- aft_list[[1]]
+  #  aft_model <- aft_list[[2]]
+  # 
+  #  concordance_aft <- concordanceIndex(pred_aft, final_test_data)
+  # 
+  # 
+  # print("Running XGB...")
+  # 
+  # xgboost_list <- xgboost_regression(final_train_data, final_test_data)
+  # pred_xgboost <- xgboost_list[[1]]
+  # xgboost_model <- xgboost_list[[2]]
+  # concordance_xgboost <- concordanceIndex(pred_xgboost, final_test_data)
+  # 
+   
+   print("Running RSF...")
+   
+   rsf_list <- random_survival_forest(final_train_data, final_test_data)
+   
+   pred_rsf <- rsf_list[[1]]
+   rsf_model <- rsf_list[[2]]
+   concordance_rsf <- concordanceIndex(pred_rsf, final_test_data, hazard = TRUE)
+   
+  # return(list(
+  #   concordance_cox,
+  #   concordance_aft,
+  #   concordance_xgboost))
+   
+   return(list(concordance_rsf))
 }
 ```
 
@@ -78,33 +85,44 @@ for(indexEvent in indexEvents){
     
     outputs <- run_models(indexEvent, outcomeEvent, pcaExplainedVariance = 0.9)
     
-    cox_results <- data.frame(
+    # cox_results <- data.frame(
+    #   indexEvent = indexEvent,
+    #   outcomeEvent = outcomeEvent,
+    #   model = "Cox",
+    #   c_index = outputs[[1]]
+    # )
+    # aft_results <- data.frame(
+    #   indexEvent = indexEvent,
+    #   outcomeEvent = outcomeEvent,
+    #   model = "AFT",
+    #   c_index = outputs[[2]]
+    # )
+    # xgb_results <- data.frame(
+    #   indexEvent = indexEvent,
+    #   outcomeEvent = outcomeEvent,
+    #   model = "XGBoost",
+    #   c_index = outputs[[3]]
+    # )
+    
+    rsf_results <- data.frame(
       indexEvent = indexEvent,
       outcomeEvent = outcomeEvent,
-      model = "Cox",
+      model = "RSF",
       c_index = outputs[[1]]
     )
-    aft_results <- data.frame(
-      indexEvent = indexEvent,
-      outcomeEvent = outcomeEvent,
-      model = "AFT",
-      c_index = outputs[[2]]
-    )
-    xgb_results <- data.frame(
-      indexEvent = indexEvent,
-      outcomeEvent = outcomeEvent,
-      model = "XGBoost",
-      c_index = outputs[[3]]
-    )
+    # results <- results %>%
+    #   bind_rows(cox_results,
+    #             aft_results,
+    #             xgb_results)
+    
+    
     results <- results %>%
-      bind_rows(cox_results,
-                aft_results,
-                xgb_results)
+      bind_rows(rsf_results)
     
   }
 }
 
-saveRDS(results, file="~/LTM-Encoder-Models/Results/Survival_Prediction/ltm_seqLen50/results.rds")
+saveRDS(results, file="~/LTM-Encoder-Models/Results/Survival_Prediction/ltm_small_updated/results_rsf.rds")
 
 ```
 

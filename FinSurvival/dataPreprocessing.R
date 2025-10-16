@@ -122,6 +122,14 @@ preprocess <- function(train, test,
                        classificationTask = FALSE, classificationCutoff = -1){
   
   
+  
+  # We can always filter out data with timeDiff of 0:
+  train <- train %>%
+    filter(timeDiff > 0)
+  
+  test <- test %>%
+    filter(timeDiff > 0)
+  
   # Let's save off the target columns up front so we can drop them before scaling:
   trainTargets <- train %>%
     select(timeDiff, status)
